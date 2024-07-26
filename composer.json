@@ -1,17 +1,25 @@
 {
     "name": "nettixcode/framework",
     "description": "The skeleton application for the NettixCode framework",
-    "keywords": [
-        "framework",
-        "NettixCode"
-    ],
     "type": "library",
     "version": "1.0.0",
     "license": "MIT",
-     "autoload": {
+    "authors": [
+        {
+            "name": "NettixCode",
+            "email": "NettixCode@gmail.com",
+            "homepage": "https://github.com/NettixCode"
+        }
+    ],
+    "autoload": {
         "psr-4": {
             "Nettixcode\\Framework\\": ""
-        }
+        },
+        "files": [
+            "providers/FrameworkServiceProvider.php",
+            "providers/DatabaseServiceProvider.php",
+            "helpers/helper.php"
+        ]
     },
     "require": {}
 }
