@@ -3,6 +3,7 @@
 return [
     'default' => [
         'SessionManager' => Nettixcode\Framework\Libraries\SessionManager::class,
+        'NxEngine' => Nettixcode\Framework\Libraries\ViewManager::class,
         'User' => Nettixcode\Framework\Libraries\UserManager::class,
         'Config' => Nettixcode\Framework\Libraries\ConfigManager::class,
         'Route' => Nettixcode\Framework\Core\Route::class,

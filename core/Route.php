@@ -6,7 +6,7 @@ use Nettixcode\Framework\Http\Request;
 use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 use Nettixcode\Framework\Libraries\Sources\Facades\Config;
-use Nettixcode\Framework\Libraries\NxEngine;
+use Nettixcode\Framework\Libraries\Sources\Facades\NxEngine;
 
 class Route
 {

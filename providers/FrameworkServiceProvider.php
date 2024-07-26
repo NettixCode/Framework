@@ -12,6 +12,7 @@ use Nettixcode\Framework\Libraries\ConfigManager as Config;
 use Nettixcode\Framework\Core\Route;
 use Nettixcode\Framework\Libraries\AliasManager;
 use Nettixcode\Framework\Libraries\UserManager;
+use Nettixcode\Framework\Libraries\ViewManager;
 use Nettixcode\Framework\Libraries\SessionManager;
 
 class FrameworkServiceProvider extends ServiceProvider
@@ -19,6 +20,10 @@ class FrameworkServiceProvider extends ServiceProvider
     public function register()
     {
         
+        $this->app->singleton(ViewManager::class, function($app) {
+            return new ViewManager();
+        });
+
         $this->app->singleton('config', function () {
             return new Config();
         });
@@ -33,7 +38,7 @@ class FrameworkServiceProvider extends ServiceProvider
             return new Route();
         });
 
-        $this->app->singleton('usermanager', function($app) {
+        $this->app->singleton(UserManager::class, function($app) {
             return new UserManager();
         });
 

@@ -3,9 +3,9 @@
 namespace Nettixcode\Framework\Libraries;
 
 use Nettixcode\Framework\Core\Blade;
-use Nettixcode\Framework\Libraries\UserManager;
+use Nettixcode\Framework\Libraries\Sources\Facades\User;
 
-class NxEngine extends Blade
+class ViewManager extends Blade
 {
     public static function view($view, $data = [])
     {

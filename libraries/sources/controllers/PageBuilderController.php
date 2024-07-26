@@ -4,7 +4,7 @@ namespace Nettixcode\Framework\Libraries\Sources\Controllers;
 
 use Nettixcode\Framework\Http\Request;
 use Nettixcode\Framework\Libraries\Sources\Facades\Config;
-use Nettixcode\Framework\Libraries\NxEngine;
+use Nettixcode\Framework\Libraries\Sources\Facades\NxEngine;
 use Nettixcode\Framework\Libraries\Sources\Facades\User;
 
 class PageBuilderController
