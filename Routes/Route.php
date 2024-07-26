@@ -1,6 +1,6 @@
 <?php
 
-namespace Nettixcode\Framework\Core;
+namespace Nettixcode\Framework\Routes;
 
 use Nettixcode\Framework\Http\Request;
 use FastRoute\RouteCollector;
