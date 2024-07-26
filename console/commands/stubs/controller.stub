@@ -1,0 +1,11 @@
+<?php
+
+namespace Application\Http\Controllers;
+
+class {{className}} {
+    public function index() {
+        // Method index
+    }
+
+    // Tambahkan metode lain sesuai kebutuhan Anda
+}

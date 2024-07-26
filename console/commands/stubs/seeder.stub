@@ -1,0 +1,56 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Database\Factories\UserFactory;
+
+class {{className}} extends Seeder {
+    public function run() {
+        $userFactory = new UserFactory();
+
+        // Membuat 10 pengguna acak
+        // $userFactory->create(10);
+
+        // Membuat satu pengguna dengan data spesifik
+        // $userFactory->create(1, [
+        //     'username' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+ 
+        // Insert a single user 
+        // DB::table('users')->insert([
+        //     'username' => 'admin',
+        //     'password' => password_hash('password', PASSWORD_BCRYPT),
+        //     'email' => 'admin@example.com',
+        //     'created_at' => date('Y-m-d H:i:s'),
+        //     'updated_at' => date('Y-m-d H:i:s'),
+        // ]);
+
+
+        // Insert multiple users
+        // for ($i = 1; $i <= 10; $i++) {
+        //     DB::table('users')->insert([
+        //         'username' => 'user' . $i,
+        //         'password' => password_hash('password', PASSWORD_BCRYPT),
+        //         'email' => 'user' . $i . '@example.com',
+        //         'created_at' => date('Y-m-d H:i:s'),
+        //         'updated_at' => date('Y-m-d H:i:s'),
+        //     ]);
+        // }
+
+        // DB::table('users')->updateOrInsert(
+        //     ['id' => 1], // Kondisi untuk memeriksa apakah ada data dengan id 1
+        //     [
+        //         'first_name' => 'Ferdihansyah',
+        //         'last_name'  => 'A.Md',
+        //         'bidang'     => 1,
+        //         'phone'      => '+6289647870288',
+        //         'email'      => 'nettixcode@gmail.com',
+        //         'image'      => 'img/users/DALLE2024-06-1613.06.12-AsimplesleekandseriouslogoiconforawebsitenamedNXCODEinspiredbyhackerthemes.Thelogoshouldfeatureaminimalistdesignwithasense.webp',
+        //     ]
+        // );
+
+    }
+}

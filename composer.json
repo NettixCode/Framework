@@ -1,0 +1,12 @@
+{
+    "name": "nettixcode/framework",
+    "description": "The skeleton application for the NettixCode framework",
+    "type": "library",
+    "version": "1.0.0",
+    "autoload": {
+        "psr-4": {
+            "Nettixcode\\Framework\\": ""
+        }
+    },
+    "require": {}
+}
