@@ -33,7 +33,7 @@ class GenerateJwtToken
         $jwt = JWT::encode($payload, self::getSecret(), 'HS256');
         SessionManager::set('jwt_token', $jwt);
         setcookie('jwt_token', $jwt, time() + 3600, '/', '', false, false);
-        error_log('JWT token generated:' . $request->getUri());
+        // error_log('JWT token generated:' . $request->getUri());
 
         return $next($request);
     }

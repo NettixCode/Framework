@@ -3,7 +3,7 @@
 namespace Nettixcode\Framework\Http;
 
 use Nettixcode\Framework\Libraries\Sources\Facades\Config;
-use Nettixcode\Framework\Core\Route;
+use Nettixcode\Framework\Routes\Route;
 
 class Kernel
 {

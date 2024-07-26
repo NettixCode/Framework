@@ -1,6 +1,6 @@
 <?php
 
-namespace Nettixcode\Framework\Core;
+namespace Nettixcode\Framework\Libraries\Sources\Views;
 
 use eftec\bladeone\BladeOne;
 use Nettixcode\Framework\Libraries\Sources\Facades\Config;

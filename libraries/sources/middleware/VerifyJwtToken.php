@@ -63,12 +63,12 @@ class VerifyJwtToken
         try {
             $decoded = JWT::decode($jwt, new Key(self::getSecret(), 'HS256'));
             // Token is valid, continue to the next middleware or controller
-            error_log('JWT Verified: ' . $request->getUri());
+            // error_log('JWT Verified: ' . $request->getUri());
 
             return $next($request);
         } catch (\Exception $e) {
             // Token is invalid, redirect to login page
-            error_log('JWT NOT Verified: ' . $request->getUri() . ' - ' . $e->getMessage());
+            // error_log('JWT NOT Verified: ' . $request->getUri() . ' - ' . $e->getMessage());
             header('HTTP/1.1 401 Unauthorized');
             echo json_encode(['message' => 'Unauthorized']);
             exit();

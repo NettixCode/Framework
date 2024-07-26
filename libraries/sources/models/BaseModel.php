@@ -55,7 +55,6 @@ abstract class BaseModel extends Model
         $instance = new static();
         $instance->data = $data;
         $instance->operation = 'create';
-        error_log("Creating item: " . json_encode($data));
         return $instance;
     }
 
@@ -103,7 +102,6 @@ abstract class BaseModel extends Model
                 unset($data['user_role']);
     
                 $record = DB::table($table)->insertGetId($data);
-                error_log("Item created with ID: " . $record);
     
                 if ($userRole && $table === 'users') {
                     DB::table('user_roles')->insert([
@@ -162,7 +160,6 @@ abstract class BaseModel extends Model
                 }
             }
         } catch (\Exception $e) {
-            error_log("Error creating item: " . $e->getMessage());
             $connection->rollBack();
             if ($response) {
                 return response()->json(['report' => 'error', 'message' => $e->getMessage()]);
@@ -271,17 +268,17 @@ abstract class BaseModel extends Model
                     'message' => $e->getMessage(),
                 ]);
             } finally {
-                error_log('Entering finally block');
-                if (file_exists($target)) {
-                    error_log("File exists: $target");
-                    if (!unlink($target)) {
-                        error_log("Failed to delete file: $target");
-                    } else {
-                        error_log("File deleted: $target");
-                    }
-                } else {
-                    error_log("File not found: $target");
-                }
+                // error_log('Entering finally block');
+                // if (file_exists($target)) {
+                //     error_log("File exists: $target");
+                //     if (!unlink($target)) {
+                //         error_log("Failed to delete file: $target");
+                //     } else {
+                //         error_log("File deleted: $target");
+                //     }
+                // } else {
+                //     error_log("File not found: $target");
+                // }
                 response()->json($json);
             }
         } else {

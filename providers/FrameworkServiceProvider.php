@@ -9,7 +9,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Support\ServiceProvider;
 use Nettixcode\Framework\Libraries\ConfigManager as Config;
-use Nettixcode\Framework\Core\Route;
+use Nettixcode\Framework\Routes\Route;
 use Nettixcode\Framework\Libraries\AliasManager;
 use Nettixcode\Framework\Libraries\UserManager;
 use Nettixcode\Framework\Libraries\ViewManager;

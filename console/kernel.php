@@ -3,6 +3,7 @@
     return [
         \Nettixcode\Framework\Console\Commands\AddMigrationCommand::class,
         \Nettixcode\Framework\Console\Commands\AppInitializeCommand::class,
+        \Nettixcode\Framework\Console\Commands\ClearCacheCommand::class,
         \Nettixcode\Framework\Console\Commands\DbSeedCommand::class,
         \Nettixcode\Framework\Console\Commands\KeyGenerateCommand::class,
         \Nettixcode\Framework\Console\Commands\MakeControllerCommand::class,

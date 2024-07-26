@@ -13,7 +13,24 @@ if (!function_exists('Config'))
 if (!function_exists('public_path')) {
     function public_path($path = '')
     {
-        return rtrim($_SERVER['DOCUMENT_ROOT'], '/') . ($path ? '/' . ltrim($path, '/') : $path);
+        $documentRoot = isset($_SERVER['DOCUMENT_ROOT']) ? rtrim($_SERVER['DOCUMENT_ROOT'], '/') : dirname(__DIR__, 4);
+
+        return $documentRoot . ($path ? '/' . ltrim($path, '/') : $path);
+    }
+}
+
+if (!function_exists('root_dir')) {
+    function root_dir($path = '')
+    {
+        // Gunakan $_SERVER['DOCUMENT_ROOT'] jika tersedia
+        $documentRoot = isset($_SERVER['DOCUMENT_ROOT']) ? rtrim($_SERVER['DOCUMENT_ROOT'], '/') : dirname(__DIR__, 4);
+
+        // Jika DOCUMENT_ROOT mengarah ke 'public', naik satu tingkat ke root utama
+        if (is_dir($documentRoot . '/public')) {
+            $documentRoot = dirname($documentRoot);
+        }
+
+        return $documentRoot . ($path ? '/' . ltrim($path, '/') : $path);
     }
 }
 

@@ -216,7 +216,6 @@ class Route
 
     private static function saveRegisteredRoutes()
     {
-        // $filePath = realpath(__DIR__ . '/../../../../storage/registered_routes.json');
         $filePath = Config::load('app','paths.storage_path').'/registered_routes.json';
         file_put_contents($filePath, json_encode(self::$registeredRoutes, JSON_PRETTY_PRINT));
     }

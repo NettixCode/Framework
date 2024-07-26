@@ -46,8 +46,6 @@ class AdminRestricted
             }
         }
 
-        error_log('Admin Check');
-
         return $next($request);
     }
 }

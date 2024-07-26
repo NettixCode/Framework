@@ -2,7 +2,7 @@
 
 return [
     'paths' => [
-        'root' => realpath(__DIR__ . '/../../../'),
+        'root' => dirname(__DIR__, 3),
     ],
     'files' => [
         'helper' => realpath(__DIR__ . '/../../../helpers').'/helper.php',

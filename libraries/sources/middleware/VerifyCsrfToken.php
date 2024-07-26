@@ -40,7 +40,7 @@ class VerifyCsrfToken
             }
         }
 
-        error_log('CSRF Verified: ' . $request->getUri());
+        // error_log('CSRF Verified: ' . $request->getUri());
 
         return $next($request);
     }
