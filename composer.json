@@ -5,7 +5,11 @@
     "version": "1.0.0",
     "autoload": {
         "psr-4": {
+<<<<<<< HEAD
             "Nettixcode\\Framework\\": ""
+=======
+            "Nettixcode\\Framework\\": "framework/"
+>>>>>>> 49bc395433b79d948e6c0203750ad15cd977686d
         }
     },
     "require": {}
