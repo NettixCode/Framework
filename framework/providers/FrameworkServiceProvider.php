@@ -44,8 +44,6 @@ class FrameworkServiceProvider extends ServiceProvider
         $this->app->singleton('filesystem', function ($app) {
             return new FilesystemManager($app);
         });
-
-        \Illuminate\Support\Facades\Schema::setFacadeApplication($this->app);
     }
 
     public function boot()
