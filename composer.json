@@ -1,6 +1,10 @@
 {
     "name": "nettixcode/framework",
     "description": "The skeleton application for the NettixCode framework",
+    "keywords": [
+        "framework",
+        "NettixCode"
+    ],
     "type": "library",
     "version": "1.0.0",
     "license": "MIT",
