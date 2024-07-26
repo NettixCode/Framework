@@ -3,7 +3,8 @@
     "description": "The skeleton application for the NettixCode framework",
     "type": "library",
     "version": "1.0.0",
-    "autoload": {
+    "license": "MIT",
+     "autoload": {
         "psr-4": {
             "Nettixcode\\Framework\\": ""
         }
