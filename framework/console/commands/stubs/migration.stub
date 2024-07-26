@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+class {{className}} extends Migration {
+    public function up() {
+        Schema::create('{{tableName}}', function (Blueprint $table) {
+            $table->increments('id')->primary();
+            $table->string('username');
+            $table->string('password');
+            $table->string('email')->unique();
+            $table->timestamps();
+        });
+    }
+
+    public function down() {
+        Schema::dropIfExists('{{tableName}}');
+
+        // Delete permissions related to this table
+        DB::table('permissions')->where('table_name', '{{tableName}}')->delete();
+    }
+
+    /**
+     * Get the table name.
+     * Dont remove this function to able create permission automatically
+     * @return string
+     */
+    public function getTableName() {
+        return '{{tableName}}';
+    }
+}
