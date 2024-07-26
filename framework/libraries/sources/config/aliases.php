@@ -15,7 +15,6 @@ return [
     'controller' => [
         'ModalController' => Application\Http\Controllers\ModalController::class,
         'PageController' => Application\Http\Controllers\PageController::class,
-        'TestttttController' => Application\Http\Controllers\TestttttController::class,
         'UsersController' => Application\Http\Controllers\UsersController::class,
     ],
 ];
