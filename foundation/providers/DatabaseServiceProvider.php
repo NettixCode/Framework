@@ -1,6 +1,6 @@
 <?php
 
-namespace Nettixcode\Framework\Providers;
+namespace Nettixcode\Framework\Foundation\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

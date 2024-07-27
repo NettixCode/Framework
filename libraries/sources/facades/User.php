@@ -9,6 +9,6 @@ class User extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return UserManager::class;
+        return 'user';
     }
 }

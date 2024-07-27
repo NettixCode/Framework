@@ -2,37 +2,32 @@
 
 namespace Nettixcode\Framework\Http;
 
-use Nettixcode\Framework\Libraries\Sources\Facades\Config;
 use Nettixcode\Framework\Routes\Route;
 
 class Kernel
 {
-    protected $middleware = [
-        'Nettixcode\Framework\Libraries\Sources\Middleware\AdminRestricted',
-        'Nettixcode\Framework\Libraries\Sources\Middleware\GenerateCsrfToken',
-        'Nettixcode\Framework\Libraries\Sources\Middleware\RateLimit',
-    ];
-
+    protected $middleware = [];
     protected $middlewareGroups = [
-        'web' => [
-            'Nettixcode\Framework\Libraries\Sources\Middleware\GenerateJwtToken',
-        ],
-        'api' => [
-            'Nettixcode\Framework\Libraries\Sources\Middleware\VerifyCsrfToken',
-            'Nettixcode\Framework\Libraries\Sources\Middleware\VerifyJwtToken',
-        ],
+        'web' => [],
+        'api' => [],
     ];
 
-    public function __construct()
+    protected $app;
+
+    public function __construct($app)
     {
+        $this->app = $app;
         $this->mergeDefaultMiddleware();
     }
 
     public function mergeDefaultMiddleware()
     {
-        // $defaultMiddleware = require __DIR__ . '/../../config/app.php';
-        $this->middleware = array_merge(Config::load('middleware', 'middleware.global'), $this->middleware);
-        foreach (Config::load('middleware', 'middleware.groups') as $group => $middlewares) {
+        // Ambil middleware dari aplikasi
+        $this->middleware = array_merge($this->app->getMiddleware(), $this->middleware);
+
+        // Ambil middleware grup dari aplikasi
+        $middlewareGroups = $this->app->getMiddlewareGroups();
+        foreach ($middlewareGroups as $group => $middlewares) {
             if (isset($this->middlewareGroups[$group])) {
                 $this->middlewareGroups[$group] = array_merge($middlewares, $this->middlewareGroups[$group]);
             } else {
@@ -43,8 +38,9 @@ class Kernel
 
     public function handle($request)
     {
-        $uri        = $request->getUri();
+        $uri = $request->getUri();
         $middleware = $this->middleware;
+
         if ($this->isApiRoute($uri)) {
             $middleware = array_merge($middleware, $this->middlewareGroups['api']);
         } else {
@@ -76,7 +72,7 @@ class Kernel
     private function isApiRoute($uri)
     {
         // Parse URL and get path
-        $path  = parse_url($uri, PHP_URL_PATH);
+        $path = parse_url($uri, PHP_URL_PATH);
         $isApi = strpos($path, '/api') === 0;
 
         return $isApi;
@@ -88,9 +84,13 @@ class Kernel
 
         $next = function ($request) use (&$index, $middleware, &$next) {
             if ($index < count($middleware)) {
-                $instance = new $middleware[$index++]();
-
-                return $instance->handle($request, $next);
+                $middlewareClass = $middleware[$index++];
+                if (is_string($middlewareClass) && class_exists($middlewareClass)) {
+                    $instance = new $middlewareClass();
+                    return $instance->handle($request, $next);
+                } else {
+                    throw new \Exception("Middleware class $middlewareClass is not valid.");
+                }
             }
 
             return $request;
@@ -101,10 +101,14 @@ class Kernel
 
     private function dispatchPostRenderMiddleware($output, array $middleware, $request)
     {
-        foreach ($middleware as $m) {
-            $instance = new $m();
-            if (method_exists($instance, 'modifyOutput')) {
-                $output = $instance->modifyOutput($output, $request);
+        foreach ($middleware as $middlewareClass) {
+            if (is_string($middlewareClass) && class_exists($middlewareClass)) {
+                $instance = new $middlewareClass();
+                if (method_exists($instance, 'modifyOutput')) {
+                    $output = $instance->modifyOutput($output, $request);
+                }
+            } else {
+                throw new \Exception("Middleware class $middlewareClass is not valid.");
             }
         }
 

@@ -7,7 +7,7 @@ class AliasManager
     public static function generate()
     {
         $controllerDir   = ConfigManager::load('app', 'paths.controllers');
-        $aliasConfigFile = ConfigManager::load('framework', 'files.aliases');
+        $aliasConfigFile = ConfigManager::load('app', 'files.aliases');
 
         $namespace = 'Application\\Http\\Controllers\\';
 

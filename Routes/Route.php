@@ -7,6 +7,7 @@ use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 use Nettixcode\Framework\Libraries\Sources\Facades\Config;
 use Nettixcode\Framework\Libraries\Sources\Facades\NxEngine;
+use Nettixcode\Framework\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Route
 {
@@ -19,6 +20,8 @@ class Route
     private static $initialized = false;
 
     private static $currentRouteName = null;
+
+    private static $exceptionHandler;
 
     public static function init()
     {
@@ -34,6 +37,8 @@ class Route
             self::$initialized = true;
             self::saveRegisteredRoutes();
         }
+        // Initialize exception handler
+        self::$exceptionHandler = new ExceptionHandler();
     }
 
     public static function get($path, $callback, $middleware = [])
@@ -95,7 +100,7 @@ class Route
     public static function registerCurrentRouteName()
     {
         if (self::$currentRouteName) {
-            $routeName              = self::$currentRouteName;
+            $routeName = self::$currentRouteName;
             self::$currentRouteName = null;
 
             $path = end(self::$routes)['path'];
@@ -122,8 +127,7 @@ class Route
         $uri    = rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
         if (self::isForbidden($uri)) {
-            self::handleForbidden("Access forbidden for $uri");
-
+            self::$exceptionHandler->handleForbidden("Access forbidden for $uri");
             return;
         }
 
@@ -131,10 +135,10 @@ class Route
 
         switch ($routeInfo[0]) {
             case \FastRoute\Dispatcher::NOT_FOUND:
-                self::handleNotFound("No route found for $uri with method $method");
+                self::$exceptionHandler->handleNotFound("No route found for $uri with method $method");
                 break;
             case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-                self::handleForbidden("Method not allowed for $uri");
+                self::$exceptionHandler->handleForbidden("Method not allowed for $uri");
                 break;
             case \FastRoute\Dispatcher::FOUND:
                 $route       = $routeInfo[1];
@@ -175,36 +179,15 @@ class Route
     {
         if (is_array($action)) {
             list($controller, $method) = $action;
-            $controller                = new $controller();
-            $request                   = new Request();
+            $controller = new $controller();
+            $request = new Request();
             call_user_func([$controller, $method], $request, $vars);
         } else {
             list($controller, $method) = explode('@', $action);
-            $controller                = new $controller();
-            $request                   = new Request();
+            $controller = new $controller();
+            $request = new Request();
             call_user_func([$controller, $method], $request, $vars);
         }
-    }
-
-    private static function handleNotFound($message = '404 Not Found')
-    {
-        http_response_code(404);
-        NxEngine::redirectToErrorPage(404);
-        error_log($message);
-    }
-
-    public static function handleForbidden($message = '403 Forbidden')
-    {
-        http_response_code(403);
-        NxEngine::redirectToErrorPage(403);
-        error_log($message);
-    }
-
-    public static function handleServerError($message = '500 Internal Server Error')
-    {
-        http_response_code(500);
-        NxEngine::redirectToErrorPage(500);
-        error_log($message);
     }
 
     private static function isForbidden($uri)

@@ -5,11 +5,12 @@ namespace Nettixcode\Framework\Libraries;
 use Illuminate\Support\Facades\DB;
 use Nettixcode\Framework\Libraries\Sources\Models\BaseModel;
 use Nettixcode\Framework\Libraries\Sources\Models\Role;
+use Nettixcode\Framework\Libraries\SessionManager;
 
 class UserManager extends BaseModel
 {
+    private static $instance = null;
     public $timestamps = false;
-
     protected $table = 'users';
 
     protected $fillable = [
@@ -19,6 +20,15 @@ class UserManager extends BaseModel
     protected $hidden = [
         'password',
     ];
+
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
 
     public function encrypt_password($value)
     {

@@ -28,7 +28,7 @@ class AdminRestricted
         $restrictedActions = array_merge($defaultRestrictedActions, Config::load('middleware', 'admin_restricted.actions'));
 
         // Handle pages signin and signout because there is no session yet
-        if (!sessionManager::has('isLogin') || !sessionManager::has('id')) {
+        if (!SessionManager::has('isLogin') || !SessionManager::has('id')) {
             return $next($request);
         }
 
@@ -45,6 +45,8 @@ class AdminRestricted
                 exit();
             }
         }
+
+        // error_log("CHECK ADMIN");
 
         return $next($request);
     }

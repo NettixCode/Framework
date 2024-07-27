@@ -2,7 +2,7 @@
 
 namespace Nettixcode\Framework\Console\Commands;
 
-use Nettixcode\Framework\Providers\DatabaseServiceProvider;
+use Nettixcode\Framework\Foundation\Providers\DatabaseServiceProvider;
 use Nettixcode\Framework\Libraries\ConfigManager as Config;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;

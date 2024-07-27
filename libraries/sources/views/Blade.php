@@ -11,9 +11,9 @@ abstract class Blade
 
     public function __construct()
     {
-        $viewsBase = Config::load('view','paths.base');
-        $viewsPage = Config::load('view','paths.pages');
-        $cache     = Config::load('view','paths.cache');
+        $viewsBase = Config::load('views','paths.base');
+        $viewsPage = Config::load('views','paths.pages');
+        $cache     = Config::load('views','paths.cache');
 
         if (!is_dir($cache)) {
             mkdir($cache, 0777, true);
@@ -21,7 +21,7 @@ abstract class Blade
 
         // Buat instance BladeOne dengan beberapa direktori views
         $this->blade = new BladeOne([$viewsBase, $viewsPage], $cache, BladeOne::MODE_DEBUG);
-        $this->blade->setFileExtension(Config::load('view','extension'));
+        $this->blade->setFileExtension(Config::load('views','extension'));
 
         // Tambahkan direktif custom untuk route
         $this->blade->directive('route', function ($expression) {

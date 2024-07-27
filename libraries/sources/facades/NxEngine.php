@@ -9,6 +9,6 @@ class NxEngine extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return ViewManager::class;
+        return 'nxengine';
     }
 }

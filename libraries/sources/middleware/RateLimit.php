@@ -39,6 +39,7 @@ class RateLimit
 
         self::logRequest($ip, 'Request allowed');
 
+        // error_log("RATE LIMIT");
         return $next($request);
     }
 

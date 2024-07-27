@@ -68,7 +68,7 @@ class VerifyJwtToken
             return $next($request);
         } catch (\Exception $e) {
             // Token is invalid, redirect to login page
-            // error_log('JWT NOT Verified: ' . $request->getUri() . ' - ' . $e->getMessage());
+            error_log('JWT NOT Verified: ' . $request->getUri() . ' - ' . $e->getMessage());
             header('HTTP/1.1 401 Unauthorized');
             echo json_encode(['message' => 'Unauthorized']);
             exit();

@@ -14,8 +14,8 @@ class GenerateCsrfToken
 
         $current_uri = $_SERVER['REQUEST_URI'];
 
-        if (!sessionManager::has('_token')) {
-            sessionManager::set('_token', self::generateToken());
+        if (!SessionManager::has('_token')) {
+            SessionManager::set('_token', self::generateToken());
         }
 
         // Jangan lakukan pengecekan untuk file statis
@@ -28,7 +28,7 @@ class GenerateCsrfToken
 
     public static function modifyOutput($output, $request)
     {
-        if (!sessionManager::has('_token')) {
+        if (!SessionManager::has('_token')) {
             return $output;
         }
 
@@ -41,13 +41,13 @@ class GenerateCsrfToken
 
     private static function insertToken($html)
     {
-        $token       = sessionManager::get('_token');
+        $token       = SessionManager::get('_token');
         $hiddenInput = '<input type="hidden" name="_token" value="' . $token . '">';
 
         // Add the hidden input to every form tag in the HTML
         $html = preg_replace('/<form\b([^>]*)>/i', '<form$1>' . $hiddenInput, $html);
 
-        // Log to debug
+
         // if (strpos($html, $hiddenInput) !== false) {
         //     error_log('CSRF Created: ' . $_SERVER['REQUEST_URI']);
         // } else {
