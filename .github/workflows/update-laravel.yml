@@ -19,11 +19,11 @@ jobs:
     - name: Remove old Illuminate files
       run: rm -rf src/illuminate
 
-    - name: Copy Specific Laravel Files
+    - name: Copy Laravel Source Files
       run: php copyLaravelSrc.php
 
     - name: List files after copy
-      run: ls -la src
+      run: ls -la src/illuminate
 
     - name: Check Git Status
       run: git status
@@ -38,6 +38,6 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git remote set-url origin https://x-access-token:${GH_PAT}@github.com/NettixCode/Framework.git
-        git add src
+        git add src/illuminate
         git commit -m 'Update Laravel source files' || echo "No changes to commit"
         git push origin main || echo "Git push failed"
