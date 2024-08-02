@@ -28,12 +28,15 @@ jobs:
     - name: Check Git Status
       run: git status
 
+    - name: Show Git Config
+      run: git config --list
+
     - name: Commit and Push Changes
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add src
         git commit -m 'Update Laravel source files' || echo "No changes to commit"
-        git push
+        git push origin main || echo "Git push failed"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
