@@ -1,4 +1,3 @@
-// copyLaravelSrc.php
 <?php
 
 function recurse_copy($src, $dst) {
@@ -9,29 +8,39 @@ function recurse_copy($src, $dst) {
             if (is_dir($src . '/' . $file)) {
                 recurse_copy($src . '/' . $file, $dst . '/' . $file);
             } else {
-                if (copy($src . '/' . $file, $dst . '/' . $file)) {
-                    echo "Copied file $src/$file to $dst/$file\n";
-                } else {
-                    echo "Failed to copy file $src/$file to $dst/$file\n";
-                }
+                copy($src . '/' . $file, $dst . '/' . $file);
             }
         }
     }
     closedir($dir);
 }
 
-$src = 'laravel-framework/src';
-$dst = 'src';
+$directories_to_copy = [
+    'bus',
+    'conditionable',
+    'collections',
+    'contracts',
+    'container',
+    'Config',
+    'Database',
+    'Events',
+    'Filesystem',
+    'Http',
+    'macroable',
+    'pipeline',
+    'Routing',
+    'session',
+    'Support',
+    'Translation',
+    'Validation'
+];
 
-if (!is_dir($src)) {
-    echo "Source directory $src does not exist.\n";
-    exit(1);
-}
+$src_base = 'laravel-framework/src/Illuminate';
+$dst_base = 'src/illuminate';
 
-recurse_copy($src, $dst);
-
-if (is_dir($dst)) {
-    echo "Laravel framework source files have been copied to src folder.\n";
-} else {
-    echo "Failed to copy Laravel framework source files.\n";
+foreach ($directories_to_copy as $dir) {
+    $src = $src_base . '/' . $dir;
+    $dst = $dst_base . '/' . $dir;
+    recurse_copy($src, $dst);
+    echo "Copied $src to $dst\n";
 }
