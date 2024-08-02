@@ -2,7 +2,7 @@
     "name": "nettixcode/framework",
     "description": "The skeleton application for the NettixCode framework",
     "type": "library",
-    "version": "1.1.3",
+    "version": "1.1.4",
     "license": "MIT",
     "authors": [
         {
@@ -13,7 +13,11 @@
     ],
     "autoload": {
         "files": [
-            "foundation/helpers.php"
+            "foundation/helpers.php",
+            "src/Illuminate/Collections/helpers.php",
+            "src/Illuminate/Events/functions.php",
+            "src/Illuminate/Filesystem/functions.php",
+            "src/Illuminate/Support/helpers.php"
         ],
         "psr-4": {
             "Nettixcode\\Framework\\": "",
