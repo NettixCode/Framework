@@ -16,20 +16,20 @@ function recurse_copy($src, $dst) {
 }
 
 $directories_to_copy = [
-    'bus',
-    'conditionable',
-    'collections',
-    'contracts',
-    'container',
+    'Bus',
+    'Conditionable',
+    'Collections',
+    'Contracts',
+    'Container',
     'Config',
     'Database',
     'Events',
     'Filesystem',
     'Http',
-    'macroable',
-    'pipeline',
+    'Macroable',
+    'Pipeline',
     'Routing',
-    'session',
+    'Session',
     'Support',
     'Translation',
     'Validation'
