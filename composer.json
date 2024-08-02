@@ -23,15 +23,6 @@
         "vlucas/phpdotenv": "^5.6",
         "firebase/php-jwt": "^6.10",
         "eftec/bladeone": "^4.13",
-        "maximebf/debugbar": "^1.22",
-        "illuminate/config": "*",
-        "illuminate/database": "*",
-        "illuminate/events": "*",
-        "illuminate/filesystem": "*",
-        "illuminate/http": "*",
-        "illuminate/routing": "*",
-        "illuminate/support": "*",
-        "illuminate/translation": "*",
-        "illuminate/validation": "*"
+        "maximebf/debugbar": "^1.22"
     }
 }
