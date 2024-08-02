@@ -2,7 +2,7 @@
     "name": "nettixcode/framework",
     "description": "The skeleton application for the NettixCode framework",
     "type": "library",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "license": "MIT",
     "authors": [
         {
@@ -13,7 +13,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Nettixcode\\Framework\\": ""
+            "Nettixcode\\Framework\\": "",
+            "Illuminate\\": "src/illuminate"
         }
     },
     "require": {

@@ -1,0 +1,30 @@
+name: Update Laravel Source
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Jalankan setiap minggu
+  workflow_dispatch:
+
+jobs:
+  update_laravel:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Clone Laravel Framework
+      run: git clone --depth 1 https://github.com/laravel/framework.git laravel-framework
+
+    - name: Copy Laravel Source Files
+      run: php copyLaravelSrc.php
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add src
+        git commit -m 'Update Laravel source files'
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
