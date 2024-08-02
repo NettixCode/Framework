@@ -2,49 +2,84 @@
 
 namespace Nettixcode\Framework\Libraries;
 
+use Illuminate\Config\Repository as ConfigRepository;
+use Illuminate\Filesystem\Filesystem;
+
 class ConfigManager
 {
-    private static $instance = null;
+    protected $config;
 
-    protected static $configs = [];
-
-    public static function getInstance()
+    public function __construct()
     {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
+        $this->config = new ConfigRepository([]);
+        $this->loadConfigurations();
     }
 
-    public static function get($file = 'app')
+    protected function loadConfigurations()
     {
-        if (!isset(self::$configs[$file])) {
-            $file != 'framework' ? 
-            self::$configs[$file] = require realpath(__DIR__ . "/../../../../config/{$file}.php"):
-            self::$configs[$file] = require realpath(__DIR__ . "/sources/config/{$file}.php");
-        }
+        $filesystem = new Filesystem;
+        $defaultPath = __DIR__ . '/../../../../config';
+        $frameworkConfigPath = __DIR__ . '/../config';
 
-        return self::$configs[$file];
+        $this->loadFiles($filesystem, $defaultPath);
+        $this->loadFiles($filesystem, $frameworkConfigPath);
     }
 
-    public static function load($file, $key = null)
+    protected function loadFiles(Filesystem $filesystem, $path)
     {
-        $config = self::get($file);
-
-        if ($key === null) {
-            return $config;
+        foreach ($filesystem->allFiles($path) as $file) {
+            $this->config->set($file->getBasename('.php'), require $file->getPathname());
         }
+    }
 
-        $keys = explode('.', $key);
-        foreach ($keys as $k) {
-            if (isset($config[$k])) {
-                $config = $config[$k];
-            } else {
-                return null;
-            }
-        }
+    public static function load($key, $default = null)
+    {
+        $cfg = new Static;
+        return $cfg->get($key, $default);
+    }
 
-        return $config;
+    public function get($key, $default = null)
+    {
+        return $this->config->get($key, $default);
+    }
+
+    public function set($key, $value)
+    {
+        return $this->config->set($key, $value);
+    }
+
+    public function has($key)
+    {
+        return $this->config->has($key);
+    }
+
+    public function all()
+    {
+        return $this->config->all();
+    }
+
+    public function forget($key)
+    {
+        return $this->config->offsetUnset($key);
+    }
+
+    public function pull($key, $default = null)
+    {
+        return $this->config->pull($key, $default);
+    }
+
+    public function cache()
+    {
+        return $this->config->cache();
+    }
+
+    public function getDefault($key, $default = null)
+    {
+        return $this->config->getDefault($key, $default);
+    }
+
+    public function keys()
+    {
+        return array_keys($this->config->all());
     }
 }

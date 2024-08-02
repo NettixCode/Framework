@@ -2,7 +2,7 @@
 
 namespace Nettixcode\Framework\Console\Commands;
 
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +24,7 @@ class MakeSeederCommand extends Command
         $name      = $input->getArgument('name');
         $className = ucfirst($name) . 'Seeder';
         $filename  = $className . '.php';
-        $path      = Config::load('app', 'paths.seeders') . '/' . $filename;
+        $path      = Config::get('app.paths.seeders') . '/' . $filename;
 
         if (file_exists($path)) {
             $output->writeln("Seeder already exists: {$filename}");

@@ -3,7 +3,7 @@
 namespace Nettixcode\Framework\Console\Commands;
 
 use Nettixcode\Framework\Foundation\Providers\DatabaseServiceProvider;
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Events\Dispatcher;
@@ -30,7 +30,7 @@ class RollbackCommand extends Command
         // Initialize Capsule
         $capsule = new Capsule();
         // $config = require __DIR__ . '/../../../config/database.php';
-        $capsule->addConnection(Config::load('database', 'connections')[Config::load('database', 'default')]);
+        $capsule->addConnection(Config::get('database.connections')[Config::get('database.default')]);
         $capsule->setEventDispatcher(new Dispatcher(new Container()));
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
@@ -64,7 +64,7 @@ class RollbackCommand extends Command
 
         foreach ($migrations as $migration) {
             $className = $migration->migration;
-            $filePath  = Config::load('app', 'paths.migrations') . '/' . $this->getFileNameFromClassName($className);
+            $filePath  = Config::get('app.paths.migrations') . '/' . $this->getFileNameFromClassName($className);
 
             if (file_exists($filePath)) {
                 require_once $filePath;
@@ -97,7 +97,7 @@ class RollbackCommand extends Command
     private function getFileNameFromClassName($className)
     {
         $finder = new Finder();
-        $finder->files()->in(Config::load('app', 'paths.migrations'))->name('*.php');
+        $finder->files()->in(Config::get('app.paths.migrations'))->name('*.php');
 
         foreach ($finder as $file) {
             $content = file_get_contents($file->getRealPath());

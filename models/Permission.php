@@ -1,6 +1,6 @@
 <?php
 
-namespace Nettixcode\Framework\Libraries\Sources\Models;
+namespace Nettixcode\Framework\Models;
 
 use Illuminate\Support\Facades\DB;
 

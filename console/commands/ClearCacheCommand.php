@@ -2,7 +2,7 @@
 
 namespace Nettixcode\Framework\Console\Commands;
 
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,7 +20,7 @@ class ClearCacheCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $cacheDir = Config::load('app', 'paths.storage_path') . '/cache';
+        $cacheDir = Config::get('app.paths.storage_path') . '/cache';
         foreach (glob($cacheDir . '/*') as $file) {
             if (is_file($file)) {
                 unlink($file);

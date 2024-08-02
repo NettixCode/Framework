@@ -1,6 +1,6 @@
 <?php
 
-namespace Nettixcode\Framework\Libraries\Sources\Facades;
+namespace Nettixcode\Framework\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Nettixcode\Framework\Libraries\UserManager;

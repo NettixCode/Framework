@@ -2,7 +2,7 @@
 
 namespace Nettixcode\Framework\Console\Commands;
 
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +24,7 @@ class MakeMigrationCommand extends Command
         $name      = $input->getArgument('name');
         $className = 'Create' . ucfirst($name) . 'Table';
         $filename  = date('Y_m_d_His') . '_create_' . strtolower($name) . '_table.php';
-        $path      = Config::load('app', 'paths.migrations') . '/' . $filename;
+        $path      = Config::get('app.paths.migrations') . '/' . $filename;
 
         if (file_exists($path)) {
             $output->writeln("Migration already exists: {$filename}");

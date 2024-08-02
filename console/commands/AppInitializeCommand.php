@@ -2,7 +2,7 @@
 
 namespace Nettixcode\Framework\Console\Commands;
 
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,7 +24,7 @@ class AppInitializeCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Path to the initialization flag file
-        $flagFile = Config::load('app', 'files.initializeflag');
+        $flagFile = Config::get('app.files.initializeflag');
 
         // Check if the initialization flag file exists
         if (file_exists($flagFile)) {

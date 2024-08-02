@@ -2,12 +2,21 @@
 
 namespace Nettixcode\Framework\Libraries;
 
+use Nettixcode\Framework\Libraries\ConfigManager;
+
 class AliasManager
 {
+    protected $config;
+
+    public function __construct(){
+        $this->config = new ConfigManager();
+    }
+
     public static function generate()
     {
-        $controllerDir   = ConfigManager::load('app', 'paths.controllers');
-        $aliasConfigFile = ConfigManager::load('app', 'files.aliases');
+        $instance = new Static;
+        $controllerDir   = $instance->config->get('app.paths.controllers');
+        $aliasConfigFile = $instance->config->get('app.files.aliases');
 
         $namespace = 'Application\\Http\\Controllers\\';
 

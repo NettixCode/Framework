@@ -2,7 +2,7 @@
 
 namespace Nettixcode\Framework\Console\Commands;
 
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +24,7 @@ class MakeControllerCommand extends Command
         $name      = $input->getArgument('name');
         $className = ucfirst($name) . 'Controller';
         $filename  = $className . '.php';
-        $path      = Config::load('app', 'paths.controllers') . '/' . $filename;
+        $path      = Config::get('app.paths.controllers') . '/' . $filename;
 
         if (file_exists($path)) {
             $output->writeln("Controller already exists: {$filename}");

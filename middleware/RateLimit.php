@@ -1,9 +1,9 @@
 <?php
 
-namespace Nettixcode\Framework\Libraries\Sources\Middleware;
+namespace Nettixcode\Framework\Middleware;
 
 use Closure;
-use Nettixcode\Framework\Libraries\Sources\Facades\Config;
+use Nettixcode\Framework\Facades\Config;
 use Nettixcode\Framework\Libraries\SessionManager;
 
 class RateLimit
@@ -12,7 +12,7 @@ class RateLimit
     {
         $ip         = $_SERVER['REMOTE_ADDR'];
         $key        = 'rate_limit:' . $ip;
-        $config     = Config::load('app', 'rate_limit');
+        $config     = Config::get('app.rate_limit');
         $rateLimit  = $config['requests']; // Max requests
         $retryAfter = $config['time_frame']; // Time frame in seconds
 
@@ -39,13 +39,13 @@ class RateLimit
 
         self::logRequest($ip, 'Request allowed');
 
-        // error_log("RATE LIMIT");
+        error_log("RATE LIMIT");
         return $next($request);
     }
 
     private static function logRequest($ip, $message)
     {
         $logMessage = sprintf("[%s] IP: %s - %s\n", date('Y-m-d H:i:s'), $ip, $message);
-        file_put_contents(config::load('app', 'files.logs'), $logMessage, FILE_APPEND);
+        file_put_contents(Config::get('app.files.logs'), $logMessage, FILE_APPEND);
     }
 }

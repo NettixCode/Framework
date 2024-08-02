@@ -3,7 +3,7 @@
 namespace Nettixcode\Framework\Console\Commands;
 
 use Nettixcode\Framework\Foundation\Providers\DatabaseServiceProvider;
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
@@ -31,7 +31,7 @@ class MigrateCommand extends Command
         // Initialize Capsule
         $capsule = new Capsule();
         // $config = require __DIR__ . '/../../../config/database.php';
-        $capsule->addConnection(Config::load('database', 'connections')[Config::load('database', 'default')]);
+        $capsule->addConnection(Config::get('database.connections')[Config::get('database.default')]);
         $capsule->setEventDispatcher(new Dispatcher(new Container()));
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
@@ -61,7 +61,7 @@ class MigrateCommand extends Command
         }
 
         // Find all migration files
-        $migrationsPath = Config::load('app', 'paths.migrations');
+        $migrationsPath = Config::get('app.paths.migrations');
         $finder         = new Finder();
         $finder->files()->in($migrationsPath)->name('*.php');
 

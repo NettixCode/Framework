@@ -2,7 +2,7 @@
 
 namespace Nettixcode\Framework\Console\Commands;
 
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Events\Dispatcher;
@@ -26,7 +26,7 @@ class TablePermissionCommand extends Command
         // Initialize Capsule
         $capsule = new Capsule();
         // $config = require __DIR__ . '/../../../config/database.php';
-        $capsule->addConnection(Config::load('database', 'connections')[Config::load('database', 'default')]);
+        $capsule->addConnection(Config::get('database.connections')[Config::get('database.default')]);
         $capsule->setEventDispatcher(new Dispatcher(new Container()));
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
@@ -34,7 +34,7 @@ class TablePermissionCommand extends Command
         // Get list of all tables
         $tables         = $capsule->getConnection()->select('SHOW TABLES');
         $excludedTables = ['migrations', 'permissions', 'roles', 'role_permissions', 'seeders', 'user_roles'];
-        $tableKey       = 'Tables_in_' . Config::load('database', 'connections')[Config::load('database', 'default')]['database'];
+        $tableKey       = 'Tables_in_' . Config::get('database.connections')[Config::get('database.default')]['database'];
         $existingTables = array_map(function ($table) use ($tableKey) {
             return $table->$tableKey;
         }, $tables);

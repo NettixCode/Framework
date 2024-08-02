@@ -2,7 +2,7 @@
 
 namespace Nettixcode\Framework\Console\Commands;
 
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,7 +20,7 @@ class KeyGenerateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Path to the key generation flag file
-        $flagFile = Config::load('app', 'files.keygenerateflag');
+        $flagFile = Config::get('app.files.keygenerateflag');
 
         // Debugging untuk memastikan path tidak kosong
         if (empty($flagFile)) {
@@ -38,7 +38,7 @@ class KeyGenerateCommand extends Command
 
         $key = 'base64:' . base64_encode(random_bytes(32));
 
-        $envPath = Config::load('app','paths.base_path') . '/.env';
+        $envPath = Config::get('app.paths.base_path') . '/.env';
         if (!file_exists($envPath)) {
             $output->writeln('<error>.env file not found</error>');
 

@@ -3,7 +3,7 @@
 namespace Nettixcode\Framework\Console\Commands;
 
 use Nettixcode\Framework\Foundation\Providers\DatabaseServiceProvider;
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
@@ -30,7 +30,7 @@ class DbSeedCommand extends Command
     {
         // Initialize Capsule
         $capsule = new Capsule();
-        $capsule->addConnection(Config::load('database', 'connections')[Config::load('database', 'default')]);
+        $capsule->addConnection(Config::get('database.connections')[Config::get('database.default')]);
         $capsule->setEventDispatcher(new Dispatcher(new Container()));
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
@@ -58,7 +58,7 @@ class DbSeedCommand extends Command
         }
 
         // Find all seeder files
-        $seedersPath = Config::load('app', 'paths.seeders');
+        $seedersPath = Config::get('app.paths.seeders');
         $finder      = new Finder();
         $finder->files()->in($seedersPath)->name('*.php');
 

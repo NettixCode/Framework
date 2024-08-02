@@ -1,8 +1,8 @@
 <?php
 
-namespace Nettixcode\Framework\Libraries\Sources\Middleware;
+namespace Nettixcode\Framework\Middleware;
 
-use Nettixcode\Framework\Libraries\Sources\Facades\Config;
+use Nettixcode\Framework\Facades\Config;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -20,7 +20,7 @@ class VerifyJwtToken
             '/api/json/role-permission',
             '/api/submit/page-builder/save'
         ];
-        $excludedConfig = Config::load('middleware', 'token.EXCLUDE_FROM_TOKEN');
+        $excludedConfig = Config::get('middleware.token.EXCLUDE_FROM_TOKEN');
         $excludedRoutes = array_merge($defaultExclude,$excludedConfig);
         $excludedRoutes = array_unique($excludedRoutes);
 
@@ -63,7 +63,7 @@ class VerifyJwtToken
         try {
             $decoded = JWT::decode($jwt, new Key(self::getSecret(), 'HS256'));
             // Token is valid, continue to the next middleware or controller
-            // error_log('JWT Verified: ' . $request->getUri());
+            error_log('JWT Verified: ' . $request->getUri());
 
             return $next($request);
         } catch (\Exception $e) {

@@ -2,8 +2,8 @@
 
 namespace Nettixcode\Framework\Libraries;
 
-use Nettixcode\Framework\Libraries\Sources\Views\Blade;
-use Nettixcode\Framework\Libraries\Sources\Facades\User;
+use Nettixcode\Framework\Views\Blade;
+use Nettixcode\Framework\Facades\User;
 
 class ViewManager extends Blade
 {

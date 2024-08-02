@@ -3,6 +3,7 @@
 namespace Nettixcode\Framework\Http;
 
 use Nettixcode\Framework\Routes\Route;
+use Illuminate\Http\JsonResponse;
 
 class Kernel
 {
@@ -49,7 +50,7 @@ class Kernel
 
         $response = $this->dispatchMiddleware($middleware, $request);
 
-        if ($response !== $request) {
+        if ($response instanceof JsonResponse) {
             return $response;
         }
 
@@ -64,6 +65,12 @@ class Kernel
 
         // Process middleware that modifies the output after it's captured
         $output = $this->dispatchPostRenderMiddleware($output, $middleware, $request);
+
+        // Jika output adalah JSON, kirimkan sebagai JsonResponse
+        if ($this->isJson($output)) {
+            $response = new JsonResponse(json_decode($output, true));
+            return $response;
+        }
 
         // Display the captured output
         echo $output;
@@ -113,5 +120,11 @@ class Kernel
         }
 
         return $output;
+    }
+
+    private function isJson($string)
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 }

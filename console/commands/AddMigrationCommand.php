@@ -2,7 +2,7 @@
 
 namespace Nettixcode\Framework\Console\Commands;
 
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +24,7 @@ class AddMigrationCommand extends Command
         $table     = $input->getArgument('table');
         $className = 'Modify' . ucfirst($table) . 'Table';
         $filename  = date('Y_m_d_His') . '_modify_' . strtolower($table) . '_table.php';
-        $path      = Config::load('app', 'paths.migrations') . '/' . $filename;
+        $path      = Config::get('app.paths.migrations') . '/' . $filename;
 
         $stubPath         = realpath(__DIR__ . '/stubs/add_column.stub');
         $stubContent      = file_get_contents($stubPath);

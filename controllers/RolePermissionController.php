@@ -1,12 +1,12 @@
 <?php
 
-namespace Nettixcode\Framework\Libraries\Sources\Controllers;
+namespace Nettixcode\Framework\Controllers;
 
 use Nettixcode\Framework\Http\Request;
-use Nettixcode\Framework\Libraries\Sources\Facades\NxEngine;
-use Nettixcode\Framework\Libraries\Sources\Models\Permission;
-use Nettixcode\Framework\Libraries\Sources\Models\Role;
-use Nettixcode\Framework\Libraries\Sources\Facades\User;
+use Nettixcode\Framework\Facades\NxEngine;
+use Nettixcode\Framework\Models\Permission;
+use Nettixcode\Framework\Models\Role;
+use Nettixcode\Framework\Facades\User;
 
 class RolePermissionController
 {

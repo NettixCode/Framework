@@ -1,10 +1,10 @@
 <?php
 
-namespace Nettixcode\Framework\Libraries\Sources\Middleware;
+namespace Nettixcode\Framework\Middleware;
 
-use Nettixcode\Framework\Libraries\Sources\Facades\Config;
+use Nettixcode\Framework\Facades\Config;
 use Nettixcode\Framework\Libraries\SessionManager;
-use Nettixcode\Framework\Libraries\Sources\Facades\User;
+use Nettixcode\Framework\Facades\User;
 
 class AdminRestricted
 {
@@ -24,8 +24,8 @@ class AdminRestricted
             '/api/submit/page-builder/save',
         ];
 
-        $restrictedPages   = array_merge($defaultRestrictedPages, Config::load('middleware', 'admin_restricted.pages'));
-        $restrictedActions = array_merge($defaultRestrictedActions, Config::load('middleware', 'admin_restricted.actions'));
+        $restrictedPages   = array_merge($defaultRestrictedPages, Config::get('middleware.admin_restricted.pages'));
+        $restrictedActions = array_merge($defaultRestrictedActions, Config::get('middleware.admin_restricted.actions'));
 
         // Handle pages signin and signout because there is no session yet
         if (!SessionManager::has('isLogin') || !SessionManager::has('id')) {
@@ -46,7 +46,7 @@ class AdminRestricted
             }
         }
 
-        // error_log("CHECK ADMIN");
+        error_log("CHECK ADMIN");
 
         return $next($request);
     }

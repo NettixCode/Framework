@@ -2,15 +2,24 @@
 
 namespace Nettixcode\Framework\Foundation;
 
+use Dotenv\Dotenv;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Container\Container as ContainerContract;
 use Illuminate\Support\Facades\Facade;
-use Nettixcode\Framework\Libraries\ConfigManager;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemManager;
 use Nettixcode\Framework\Libraries\AliasManager;
+use Nettixcode\Framework\Libraries\AuthManager;
+use Nettixcode\Framework\Libraries\ConfigManager;
 use Nettixcode\Framework\Libraries\SessionManager;
+use Nettixcode\Framework\Libraries\UserManager;
+use Nettixcode\Framework\Libraries\ViewManager;
+use Nettixcode\Framework\Routes\Route;
 use Symfony\Component\Console\Application as ConsoleApplication;
 
 class Application extends Container
 {
+    protected static $instance;
     protected $basePath;
     protected $config = [];
     protected $middleware = [];
@@ -18,37 +27,92 @@ class Application extends Container
     protected $routes = [];
     protected $exceptions = [];
     protected $consoleApplication;
-
+    protected $configs;
+    
     public function __construct($basePath)
     {
         $this->basePath = $basePath;
 
-        SessionManager::getInstance();
-
         Facade::setFacadeApplication($this);
 
-        // Generate aliases using AliasManager
+        require realpath(__DIR__ . '/helpers.php');
+
+        $this->registerSingleton();
+
+        $this->configs = new ConfigManager();
+        
+        date_default_timezone_set($this->configs->get('app.timezone'));
+
+        $dotenv = Dotenv::createImmutable($this->basePath);
+        $dotenv->load();
+
+        SessionManager::getInstance();
+
         AliasManager::generate();
 
-        // Load aliases
         $this->loadAliases();
 
-        // Register service providers
         $this->registerConfiguredProviders();
 
-        // Initialize console application with dynamic version
-        $appName = $this->make('config')->load('app', 'app_name');
+        $appName = $this->configs->get('app.app_name');
         $appVersion = $this->getVersion();
         $this->consoleApplication = new ConsoleApplication($appName, $appVersion);
     }
 
+    public static function getInstance()
+    {
+        return static::$instance;
+    }
+
+    public static function setInstance(?ContainerContract $container = null)
+    {
+        static::$instance = $container;
+    }
+
+    public function basePath($path = '')
+    {
+        return $this->basePath . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+
+    protected function registerSingleton()
+    {
+        static::setInstance($this);
+
+        $this->singleton('config', function () {
+            return new ConfigManager();
+        });
+        
+        $this->singleton('files', function () {
+            return new Filesystem();
+        });
+        
+        $this->singleton('filesystem', function ($app) {
+            return new FilesystemManager($app);
+        });
+        
+        $this->singleton('user', function($app) {
+            return new UserManager();
+        });
+        
+        $this->singleton('auth', function($app) {
+            return new AuthManager();
+        });
+        
+        $this->singleton('nxengine', function($app) {
+            return new ViewManager();
+        });
+        
+        $this->singleton('route', function () {
+            return new Route();
+        });
+    }
+
     protected function loadAliases()
     {
-        $aliases = ConfigManager::load('aliases', 'default');
-        $controllerAliases = ConfigManager::load('aliases', 'default_controller');
-        $customAliases = ConfigManager::load('aliases', 'controller');
+        $aliases = $this->configs->get('aliases.default');
+        $controllerAliases = $this->configs->get('aliases.default_controller');
+        $customAliases = $this->configs->get('aliases.controller');
 
-        // Gabungkan semua alias
         $allAliases = array_merge($aliases, $controllerAliases, $customAliases);
 
         AliasLoader::getInstance($allAliases)->register();
@@ -56,7 +120,7 @@ class Application extends Container
 
     protected function registerConfiguredProviders()
     {
-        $providers = ConfigManager::load('providers');
+        $providers = $this->configs->get('app.providers');
 
         foreach ($providers as $provider) {
             $this->register(new $provider($this));
@@ -74,11 +138,6 @@ class Application extends Container
         if (method_exists($provider, 'boot')) {
             $this->call([$provider, 'boot']);
         }
-    }
-
-    public function basePath()
-    {
-        return $this->basePath;
     }
 
     public static function configure($basePath)

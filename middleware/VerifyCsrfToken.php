@@ -1,8 +1,8 @@
 <?php
 
-namespace Nettixcode\Framework\Libraries\Sources\Middleware;
+namespace Nettixcode\Framework\Middleware;
 
-use Nettixcode\Framework\Libraries\Sources\Facades\Config;
+use Nettixcode\Framework\Facades\Config;
 use Nettixcode\Framework\Libraries\SessionManager;
 
 class VerifyCsrfToken
@@ -19,7 +19,7 @@ class VerifyCsrfToken
             '/api/json/role-permission',
             '/api/submit/page-builder/save',
         ];
-        $excludedConfig = Config::load('middleware', 'token.EXCLUDE_FROM_TOKEN');
+        $excludedConfig = Config::get('middleware.token.EXCLUDE_FROM_TOKEN');
         $excludedRoutes = array_merge($defaultExclude,$excludedConfig);
         $excludedRoutes = array_unique($excludedRoutes);
 
@@ -40,7 +40,7 @@ class VerifyCsrfToken
             }
         }
 
-        // error_log('CSRF Verified: ' . $request->getUri());
+        error_log('CSRF Verified: ' . $request->getUri());
 
         return $next($request);
     }

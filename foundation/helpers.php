@@ -1,36 +1,38 @@
 <?php
 
-use Nettixcode\Framework\Libraries\Sources\Facades\Config;
+use Nettixcode\Framework\Foundation\Application;
 
-if (!function_exists('Config'))
-{
-    function Config()
+if (! function_exists('base_path')) {
+    /**
+     * Get the base path of the application.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function base_path($path = '')
     {
-        return Config::class;
+        return Application::getInstance()->basePath($path);
     }
 }
 
-if (!function_exists('public_path')) {
+if (! function_exists('public_path')) {
     function public_path($path = '')
     {
-        $documentRoot = isset($_SERVER['DOCUMENT_ROOT']) ? rtrim($_SERVER['DOCUMENT_ROOT'], '/') : dirname(__DIR__, 4);
-
-        return $documentRoot . ($path ? '/' . ltrim($path, '/') : $path);
+        return base_path('public') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 }
 
-if (!function_exists('root_dir')) {
-    function root_dir($path = '')
+if (! function_exists('config_path')) {
+    function config_path($path = '')
     {
-        // Gunakan $_SERVER['DOCUMENT_ROOT'] jika tersedia
-        $documentRoot = isset($_SERVER['DOCUMENT_ROOT']) ? rtrim($_SERVER['DOCUMENT_ROOT'], '/') : dirname(__DIR__, 4);
+        return base_path('config') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+}
 
-        // Jika DOCUMENT_ROOT mengarah ke 'public', naik satu tingkat ke root utama
-        if (is_dir($documentRoot . '/public')) {
-            $documentRoot = dirname($documentRoot);
-        }
-
-        return $documentRoot . ($path ? '/' . ltrim($path, '/') : $path);
+if (! function_exists('storage_path')) {
+    function storage_path($path = '')
+    {
+        return base_path('storage') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 }
 

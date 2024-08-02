@@ -6,11 +6,11 @@ use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Translation\ArrayLoader;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\Factory as ValidatorFactory;
+use Nettixcode\Framework\Exceptions\ValidationException;
 
 class Request
 {
     protected $illuminateRequest;
-
     protected static $validator;
 
     public function __construct()
@@ -22,18 +22,16 @@ class Request
     protected function initializeValidator()
     {
         if (!self::$validator) {
-            $loader          = new ArrayLoader();
-            $translator      = new Translator($loader, 'en');
+            $loader = new ArrayLoader();
+            $translator = new Translator($loader, 'en');
             self::$validator = new ValidatorFactory($translator);
 
-            // Aturan dan pesan validasi kustom
             $this->registerCustomValidationRules(self::$validator);
         }
     }
 
     protected function registerCustomValidationRules($validator)
     {
-        // Daftar aturan dan pesan kesalahan kustom
         $this->addCustomRule($validator, 'lowercase', function ($attribute, $value, $parameters, $validator) {
             return $value === strtolower($value);
         }, 'The :attribute must be in lowercase.');
@@ -49,10 +47,8 @@ class Request
         $this->addCustomRule($validator, 'chars', function ($attribute, $value, $parameters, $validator) {
             if (strpos($parameters[0], 'chars:') === 0) {
                 $pattern = $this->parseRegexRule($parameters[0]);
-
                 return preg_match($pattern, $value);
             }
-
             return true;
         }, 'The :attribute format is invalid.');
 
@@ -69,7 +65,6 @@ class Request
         });
     }
 
-    // Magic method to forward calls to the IlluminateRequest instance
     public function __call($method, $parameters)
     {
         return call_user_func_array([$this->illuminateRequest, $method], $parameters);
@@ -81,22 +76,20 @@ class Request
 
         if ($validator->fails()) {
             $errors = $validator->errors()->toArray();
-            throw new \Exception(json_encode($errors));
+            throw new ValidationException(json_encode($errors));
         }
 
         return true;
     }
 
-    private function parseRegexRule($rule)
+    public function getIlluminateRequest()
     {
-        $pattern = substr($rule, 6);
-        if (preg_match('/^\[".*"\]$/', $pattern)) {
-            $chars        = json_decode($pattern, true);
-            $escapedChars = array_map('preg_quote', $chars, array_fill(0, count($chars), '/'));
+        return $this->illuminateRequest;
+    }
 
-            return '/^[' . implode('', $escapedChars) . 'a-zA-Z]+$/'; // Tambahkan a-zA-Z untuk karakter alfabet
-        }
-
-        return $pattern;
+    // Method to get request URI
+    public function getUri()
+    {
+        return $this->illuminateRequest->getUri();
     }
 }

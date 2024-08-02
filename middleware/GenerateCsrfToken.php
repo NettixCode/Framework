@@ -1,6 +1,6 @@
 <?php
 
-namespace Nettixcode\Framework\Libraries\Sources\Middleware;
+namespace Nettixcode\Framework\Middleware;
 
 use Nettixcode\Framework\Libraries\SessionManager;
 
@@ -48,11 +48,11 @@ class GenerateCsrfToken
         $html = preg_replace('/<form\b([^>]*)>/i', '<form$1>' . $hiddenInput, $html);
 
 
-        // if (strpos($html, $hiddenInput) !== false) {
-        //     error_log('CSRF Created: ' . $_SERVER['REQUEST_URI']);
-        // } else {
-        //     error_log("CSRF didn't need.");
-        // }
+        if (strpos($html, $hiddenInput) !== false) {
+            error_log('CSRF Created: ' . $_SERVER['REQUEST_URI']);
+        } else {
+            error_log("CSRF didn't need.");
+        }
 
         return $html;
     }

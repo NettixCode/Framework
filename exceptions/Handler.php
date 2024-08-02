@@ -1,9 +1,9 @@
 <?php
 
-namespace Nettixcode\Framework\Foundation\Exceptions;
+namespace Nettixcode\Framework\Exceptions;
 
 use Exception;
-use Nettixcode\Framework\Libraries\Sources\Facades\NxEngine;
+use Nettixcode\Framework\Facades\NxEngine;
 
 class Handler
 {

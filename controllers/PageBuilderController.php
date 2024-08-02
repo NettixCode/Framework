@@ -1,11 +1,11 @@
 <?php
 
-namespace Nettixcode\Framework\Libraries\Sources\Controllers;
+namespace Nettixcode\Framework\Controllers;
 
 use Nettixcode\Framework\Http\Request;
-use Nettixcode\Framework\Libraries\Sources\Facades\Config;
-use Nettixcode\Framework\Libraries\Sources\Facades\NxEngine;
-use Nettixcode\Framework\Libraries\Sources\Facades\User;
+use Nettixcode\Framework\Facades\Config;
+use Nettixcode\Framework\Facades\NxEngine;
+use Nettixcode\Framework\Facades\User;
 
 class PageBuilderController
 {
@@ -24,8 +24,8 @@ class PageBuilderController
 
         $filename = strtolower(str_replace(' ', '_', $pageName)) . '.nxcode.php';
         $jsname = strtolower(str_replace(' ', '_', $pageName)) . '.js';
-        $filepath = Config::load('app', 'paths.public_pages') . '/' . $filename;
-        $jspath = Config::load('app', 'paths.public_js') . '/' . $jsname;
+        $filepath = Config::get('app.paths.public_pages') . '/' . $filename;
+        $jspath = Config::get('app.paths.public_js') . '/' . $jsname;
         
 
         file_put_contents($filepath, $content);

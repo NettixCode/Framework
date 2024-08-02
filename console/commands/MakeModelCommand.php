@@ -6,7 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Nettixcode\Framework\Libraries\ConfigManager as Config;
+use Nettixcode\Framework\Facades\Config;
 
 class MakeModelCommand extends Command
 {
@@ -24,7 +24,7 @@ class MakeModelCommand extends Command
         $name      = $input->getArgument('name');
         $className = ucfirst($name);
         $filename  = $className . '.php';
-        $path      = Config::load('app', 'paths.models') . '/' . $filename;
+        $path      = Config::get('app.paths.models') . '/' . $filename;
 
         if (file_exists($path)) {
             $output->writeln("Model already exists: {$filename}");
