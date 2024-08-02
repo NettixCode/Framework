@@ -16,11 +16,11 @@ jobs:
     - name: Clone Laravel Framework
       run: git clone --depth 1 https://github.com/laravel/framework.git laravel-framework
 
-    - name: List files after clone
-      run: ls -la laravel-framework/src
+    - name: Remove old Illuminate files
+      run: rm -rf src/illuminate
 
-    - name: Copy Laravel Source Files
-      run: php copyLaravelSrc.php
+    - name: Copy Specific Laravel Files
+      run: php copySpecificLaravelFiles.php
 
     - name: List files after copy
       run: ls -la src
