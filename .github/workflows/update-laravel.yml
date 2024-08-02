@@ -32,11 +32,12 @@ jobs:
       run: git config --list
 
     - name: Commit and Push Changes
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git remote set-url origin https://x-access-token:${GH_PAT}@github.com/NettixCode/Framework.git
         git add src
         git commit -m 'Update Laravel source files' || echo "No changes to commit"
         git push origin main || echo "Git push failed"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
