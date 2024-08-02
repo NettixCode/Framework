@@ -20,7 +20,7 @@ jobs:
       run: rm -rf src/illuminate
 
     - name: Copy Specific Laravel Files
-      run: php copySpecificLaravelFiles.php
+      run: php copyLaravelSrc.php
 
     - name: List files after copy
       run: ls -la src
