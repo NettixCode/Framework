@@ -19,8 +19,8 @@ class ConfigManager implements ArrayAccess
     protected function loadConfigurations()
     {
         $filesystem = new Filesystem;
-        $defaultPath = __DIR__ . '/../../../../config';
-        $frameworkConfigPath = __DIR__ . '/../config';
+        $defaultPath = base_path('config');
+        $frameworkConfigPath = dirname(__DIR__ , 2) . '/config';
 
         $this->loadFiles($filesystem, $defaultPath);
         $this->loadFiles($filesystem, $frameworkConfigPath);
