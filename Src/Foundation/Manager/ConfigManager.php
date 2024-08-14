@@ -27,10 +27,14 @@ class ConfigManager implements ArrayAccess
     {
         $filesystem = new Filesystem;
         $defaultPath = base_path('config');
-        $frameworkConfigPath = dirname(__DIR__, 2) . '/Config';
+        $frameworkConfigPath = realpath(dirname(__DIR__, 2)) . '/Config';
 
         $this->loadFiles($filesystem, $defaultPath);
         $this->loadFiles($filesystem, $frameworkConfigPath);
+
+        // if (!empty($configItems)) {}
+        //     $this->createConfigCache();
+        // }
     }
 
     protected function loadFiles(Filesystem $filesystem, $path)

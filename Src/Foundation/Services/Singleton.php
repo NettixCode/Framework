@@ -26,10 +26,6 @@ class Singleton
 
     protected function registerSingletons()
     {
-        // $this->app->singleton('config', function () {
-        //     return new ConfigManager();
-        // });
-        
         $this->app->singleton('session', function () {
             return SessionManager::getInstance();
         });

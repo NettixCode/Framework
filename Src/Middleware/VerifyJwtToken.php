@@ -19,7 +19,8 @@ class VerifyJwtToken
         $defaultExclude = [
             '/signout',
             '/api/json/role-permission',
-            '/api/submit/page-builder/save'
+            '/api/submit/page-builder/save',
+            '/api/submit/signin'
         ];
         $excludedConfig = Config::get('middleware.token.EXCLUDE_FROM_TOKEN');
         $excludedRoutes = array_merge($defaultExclude, $excludedConfig);
@@ -61,7 +62,7 @@ class VerifyJwtToken
             } catch (\Exception $e) {
                 $handler = app()->exceptions;
                 http_response_code(401);
-                $handler->handleError(401);
+                $handler->handleError($e);
                 header('HTTP/1.1 401 Unauthorized');
                 echo json_encode(['message' => $e->getMessage()]);
                 exit();
@@ -70,7 +71,7 @@ class VerifyJwtToken
 
         try {
             // Mendekripsi token sebelum verifikasi
-            $encrypter = new Encrypter(base64_decode(substr(env('APP_KEY'), 7)), 'AES-256-CBC');
+            $encrypter = new Encrypter(base64_decode(substr(app('config')->get('app.key'), 7)), 'AES-256-CBC');
             $decryptedJwt = $encrypter->decrypt($jwt);
 
             // Verifikasi JWT yang telah didekripsi
@@ -79,7 +80,9 @@ class VerifyJwtToken
             // Token valid, lanjutkan ke middleware atau controller berikutnya
             return $next($request);
         } catch (\Exception $e) {
-            // Token tidak valid, tolak akses
+            $handler = app()->exceptions;
+            http_response_code(401);
+            $handler->handleError($e);
             error_log('JWT NOT Verified: ' . $request->getUri() . ' - ' . $e->getMessage());
             header('HTTP/1.1 401 Unauthorized');
             echo json_encode(['message' => 'Unauthorized']);

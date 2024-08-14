@@ -38,12 +38,12 @@ class GenerateJwtToken
             $jwt = JWT::encode($payload, self::getSecret(), 'HS256');
 
             // Enkripsi token sebelum disimpan
-            $encrypter = new Encrypter(base64_decode(substr(env('APP_KEY'), 7)), 'AES-256-CBC');
+            $encrypter = new Encrypter(base64_decode(substr(app('config')->get('app.key'), 7)), 'AES-256-CBC');
             $encryptedJwt = $encrypter->encrypt($jwt);
 
             // Simpan JWT di session dan cookie
             SessionManager::set('jwt_token', $encryptedJwt);
-            setcookie('jwt_token', $encryptedJwt, time() + 3600, '/', '', false, false);
+            setcookie('jwt_token', $encryptedJwt, time() + 3600, '/', '', false, true);
         }
 
         return $next($request);
