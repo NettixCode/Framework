@@ -20,13 +20,13 @@
             "Libraries/Illuminate/Support/helpers.php"
         ],
         "psr-4": {
-            "Nettixcode\\Framework\\": "Src/",
+            "Nettixcode\\Framework\\": "Src",
             "Laravel\\SerializableClosure\\": "Libraries/serializable-closure/src",
             "Illuminate\\": "Libraries/Illuminate",
             "Illuminate\\Support\\": [
-                "Libraries/Illuminate/Macroable/",
-                "Libraries/Illuminate/Collections/",
-                "Libraries/Illuminate/Conditionable/"
+                "Libraries/Illuminate/Macroable",
+                "Libraries/Illuminate/Collections",
+                "Libraries/Illuminate/Conditionable"
             ]
         }
     },
