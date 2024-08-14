@@ -53,7 +53,6 @@ class Alias
 
         $customControllerAliases = file_exists($customControllerAliasesPath) ? require $customControllerAliasesPath : [];
         
-        // Pastikan bahwa $customControllerAliases['controller'] adalah array
         $controllerAliases = isset($customControllerAliases['controller']) && is_array($customControllerAliases['controller'])
             ? $customControllerAliases['controller']
             : [];
