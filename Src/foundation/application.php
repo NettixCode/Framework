@@ -78,6 +78,17 @@ class Application extends Container
 
         SessionManager::getInstance();
 
+        $this->app->singleton('config', function () {
+            $configPath = $this->getCachedConfigPath();
+
+            if (file_exists($configPath)) {
+                $configItems = require $configPath;
+                return new ConfigManager($configItems);
+            } else {
+                return new ConfigManager();
+            }
+        });
+
         new Singleton($this);        
     }
 
@@ -92,10 +103,8 @@ class Application extends Container
 
     protected function registerBaseService()
     {
-        $this->register(\Nettixcode\Framework\Foundation\Providers\DatabaseServiceProvider::class);        
-        $this->register(\Illuminate\Events\EventServiceProvider::class);        
-        $this->register(\Illuminate\Log\LogServiceProvider::class);        
         $this->register(\Illuminate\Routing\RoutingServiceProvider::class);        
+        $this->register(\Nettixcode\Framework\Foundation\Providers\DatabaseServiceProvider::class);        
     }
    
     private function configure_dev(){
@@ -110,11 +119,11 @@ class Application extends Container
                     $debugbar['time']->startMeasure('Booting', 'Booting','time');
                 }
             }
+            
+            $appName = $this['config']->get('app.app_name');
+            $appVersion = $this->getVersion();
+            $this->consoleApplication = new ConsoleApplication($appName, $appVersion);
         }
-        
-        $appName = $this['config']->get('app.app_name');
-        $appVersion = $this->getVersion();
-        $this->consoleApplication = new ConsoleApplication($appName, $appVersion);
     }
 
     public function basePath($path = '')
@@ -175,6 +184,11 @@ class Application extends Container
     public function runConsole()
     {
         return $this->consoleApplication;
+    }
+
+    public function getCachedConfigPath()
+    {
+        return $this->basePath . '/storage/framework/cache/data/config.php';
     }
 
     public function getCachedRoutesPath()

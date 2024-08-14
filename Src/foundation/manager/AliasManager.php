@@ -16,11 +16,10 @@ class AliasManager
     {
         $instance = new Static;
         $controllerDir   = $instance->config->get('app.paths.controllers');
-        $aliasConfigFile = $instance->config->get('app.files.aliases');
+        $aliasConfigFile = $instance->config->get('app.cache_paths.local') . '/controlleraliases.php';
 
         $namespace = '\\Application\\Http\\Controllers\\';
 
-        // Membuat daftar file di direktori controller
         $files       = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($controllerDir));
         $controllers = [];
 
@@ -33,9 +32,8 @@ class AliasManager
             }
         }
 
-        // Muat alias yang sudah ada dari file konfigurasi
         $existingAliases = [];
-        if (file_exists($aliasConfigFile)) {
+        if (!is_null($aliasConfigFile) && file_exists($aliasConfigFile)) {
             $existingAliases = include $aliasConfigFile;
         }
 
@@ -53,19 +51,16 @@ class AliasManager
         foreach ($existingAliases as $group => $aliases) {
             foreach ($aliases as $alias => $class) {
                 if ($group === 'controller') {
-                    // Jika alias controller sudah tidak ada, jangan tambahkan kembali
                     if (!isset($controllers[$alias])) {
                         continue;
                     }
                 }
-                // Jika alias tidak ada di updatedAliases, tambahkan
                 if (!isset($updatedAliases[$group][$alias])) {
                     $updatedAliases[$group][$alias] = $class;
                 }
             }
         }
 
-        // Buat konten file konfigurasi alias
         $configContent = "<?php\n\nreturn [\n";
         foreach ($updatedAliases as $group => $aliases) {
             $configContent .= "    '$group' => [\n";
@@ -76,7 +71,6 @@ class AliasManager
         }
         $configContent .= "];\n";
 
-        // Tulis ke file konfigurasi alias
         file_put_contents($aliasConfigFile, $configContent);
     }
 }

@@ -27,10 +27,21 @@ class Handler
     {
         if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             return $this->handleNotFound($exception);
+        } elseif ($exception instanceof \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException) {
+            return $this->handleForbidden($exception);
+        } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException && $e->getStatusCode() >= 500) {
+            $handler->handleServerError($e);
         }
+}
 
-        return $this->handleServerError($exception);
+    public function handleError(Throwable $exception)
+    {
+        http_response_code($exception);
+        NxEngine::redirectToErrorPage($exception);
+        error_log($exception->getMessage()); // Log the exception message
+        error_log($exception->getTraceAsString()); // Log the stack trace for more details (optional)
     }
+    
 
     public function handleNotFound(Throwable $exception)
     {

@@ -81,6 +81,10 @@ class ApplicationBuilder
     {
         $service = [
             \Nettixcode\Framework\Foundation\Providers\ViewServiceProvider::class,
+            \Illuminate\Encryption\EncryptionServiceProvider::class,
+            \Illuminate\Hashing\HashServiceProvider::class,
+            \Illuminate\Events\EventServiceProvider::class,
+            \Illuminate\Log\LogServiceProvider::class,
         ];
     
         $providers = $this->app['config']->get('app.providers');    

@@ -5,6 +5,7 @@ namespace Nettixcode\Framework\Middleware;
 use Nettixcode\Framework\Facades\Config;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Illuminate\Encryption\Encrypter;
 
 class VerifyJwtToken
 {
@@ -21,7 +22,7 @@ class VerifyJwtToken
             '/api/submit/page-builder/save'
         ];
         $excludedConfig = Config::get('middleware.token.EXCLUDE_FROM_TOKEN');
-        $excludedRoutes = array_merge($defaultExclude,$excludedConfig);
+        $excludedRoutes = array_merge($defaultExclude, $excludedConfig);
         $excludedRoutes = array_unique($excludedRoutes);
 
         // Jangan lakukan pengecekan untuk file statis
@@ -29,6 +30,7 @@ class VerifyJwtToken
             return $next($request);
         }
 
+        // Jangan lakukan pengecekan jika URI ada dalam daftar pengecualian
         if (in_array($current_uri, $excludedRoutes)) {
             return $next($request);
         }
@@ -50,24 +52,34 @@ class VerifyJwtToken
 
         // Jika tidak ada token di kedua tempat, tolak akses
         if (!$jwt) {
-            if ($current_uri === '/signin' || $current_uri === '/signout') {
-                return $next($request);
-            } else {
-                // Redirect to login page if JWT token is not set
+            try {
+                if ($current_uri === '/signin' || $current_uri === '/signout') {
+                    return $next($request);
+                } else {
+                    throw new \Exception('Unauthorized', 401);
+                }
+            } catch (\Exception $e) {
+                $handler = app()->exceptions;
+                http_response_code(401);
+                $handler->handleError(401);
                 header('HTTP/1.1 401 Unauthorized');
-                echo json_encode(['message' => 'Unauthorized']);
+                echo json_encode(['message' => $e->getMessage()]);
                 exit();
             }
         }
 
         try {
-            $decoded = JWT::decode($jwt, new Key(self::getSecret(), 'HS256'));
-            // Token is valid, continue to the next middleware or controller
-            // error_log('JWT Verified: ' . $request->getUri());
+            // Mendekripsi token sebelum verifikasi
+            $encrypter = new Encrypter(base64_decode(substr(env('APP_KEY'), 7)), 'AES-256-CBC');
+            $decryptedJwt = $encrypter->decrypt($jwt);
 
+            // Verifikasi JWT yang telah didekripsi
+            $decoded = JWT::decode($decryptedJwt, new Key(self::getSecret(), 'HS256'));
+
+            // Token valid, lanjutkan ke middleware atau controller berikutnya
             return $next($request);
         } catch (\Exception $e) {
-            // Token is invalid, redirect to login page
+            // Token tidak valid, tolak akses
             error_log('JWT NOT Verified: ' . $request->getUri() . ' - ' . $e->getMessage());
             header('HTTP/1.1 401 Unauthorized');
             echo json_encode(['message' => 'Unauthorized']);

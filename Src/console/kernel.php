@@ -4,6 +4,8 @@
         \Nettixcode\Framework\Console\Commands\AddMigrationCommand::class,
         \Nettixcode\Framework\Console\Commands\AppInitializeCommand::class,
         \Nettixcode\Framework\Console\Commands\ClearCacheCommand::class,
+        \Nettixcode\Framework\Console\Commands\ConfigCacheCommand::class,
+        \Nettixcode\Framework\Console\Commands\ConfigClearCommand::class,
         \Nettixcode\Framework\Console\Commands\DbSeedCommand::class,
         \Nettixcode\Framework\Console\Commands\KeyGenerateCommand::class,
         \Nettixcode\Framework\Console\Commands\MakeControllerCommand::class,
@@ -16,4 +18,5 @@
         \Nettixcode\Framework\Console\Commands\RouteClearCommand::class,
         \Nettixcode\Framework\Console\Commands\RouteListCommand::class,
         \Nettixcode\Framework\Console\Commands\TablePermissionCommand::class,
+        \Nettixcode\Framework\Console\Commands\ViewClearCommand::class,
     ];

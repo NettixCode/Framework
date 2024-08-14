@@ -80,13 +80,10 @@ class Kernel
             $handler = app()->exceptions;
 
             if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-                // Tangani 404 Not Found
                 $handler->handleNotFound($e);
             } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException) {
-                // Tangani 403 Forbidden
                 $handler->handleForbidden($e);
-            } else {
-                // Tangani exception lainnya (misalnya 500 Internal Server Error)
+            } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException && $e->getStatusCode() >= 500) {
                 $handler->handleServerError($e);
             }
         }

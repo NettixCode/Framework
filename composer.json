@@ -2,7 +2,7 @@
     "name": "nettixcode/framework",
     "description": "The skeleton application for the NettixCode framework",
     "type": "library",
-    "version": "1.1.6",
+    "version": "1.1.7",
     "license": "MIT",
     "authors": [
         {
@@ -13,20 +13,20 @@
     ],
     "autoload": {
         "files": [
-            "Src/foundation/helpers.php",
-            "Libraries/Illuminate/Collections/helpers.php",
-            "Libraries/Illuminate/Events/functions.php",
-            "Libraries/Illuminate/Filesystem/functions.php",
-            "Libraries/Illuminate/Support/helpers.php"
+            "src/foundation/helpers.php",
+            "libraries/Illuminate/Collections/helpers.php",
+            "libraries/Illuminate/Events/functions.php",
+            "libraries/Illuminate/Filesystem/functions.php",
+            "libraries/Illuminate/Support/helpers.php"
         ],
         "psr-4": {
-            "Nettixcode\\Framework\\": "Src/",
-            "Laravel\\SerializableClosure\\": "Libraries/serializable-closure/src",
-            "Illuminate\\": "Libraries/illuminate",
+            "Nettixcode\\Framework\\": "src/",
+            "Laravel\\SerializableClosure\\": "libraries/serializable-closure/src",
+            "Illuminate\\": "libraries/illuminate",
             "Illuminate\\Support\\": [
-                "Libraries/Illuminate/Macroable/",
-                "Libraries/Illuminate/Collections/",
-                "Libraries/Illuminate/Conditionable/"
+                "libraries/Illuminate/Macroable/",
+                "libraries/Illuminate/Collections/",
+                "libraries/Illuminate/Conditionable/"
             ]
         }
     },

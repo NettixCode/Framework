@@ -43,14 +43,22 @@ class Alias
             'log' => [\Illuminate\Log\LogManager::class, \Psr\Log\LoggerInterface::class],
         ];
 
-        $controllerAliases = [
+        $controllerAlias = [
             'RolePermissionController' => \Nettixcode\Framework\Controllers\RolePermissionController::class,
             'PageBuilderController' => \Nettixcode\Framework\Controllers\PageBuilderController::class,
         ];
 
-        $customAliases = $this->app['config']->get('aliases.controller', []);
+        $customAliases = $this->app['config']->get('aliases', []);
+        $customControllerAliasesPath = storage_path('cache').'/controlleraliases.php';
 
-        $allAliases = array_merge($aliases, $controllerAliases, $customAliases);
+        $customControllerAliases = file_exists($customControllerAliasesPath) ? require $customControllerAliasesPath : [];
+        
+        // Pastikan bahwa $customControllerAliases['controller'] adalah array
+        $controllerAliases = isset($customControllerAliases['controller']) && is_array($customControllerAliases['controller'])
+            ? $customControllerAliases['controller']
+            : [];
+        
+        $allAliases = array_merge($aliases, $controllerAlias, $customAliases, $controllerAliases);
 
         AliasLoader::getInstance($allAliases)->register();
     }
