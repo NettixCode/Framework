@@ -40,7 +40,7 @@ $directories_to_copy = [
 ];
 
 $src_base = 'laravel-framework/src/Illuminate';
-$dst_base = 'Libraries/illuminate';
+$dst_base = 'Libraries/Illuminate';
 
 foreach ($directories_to_copy as $dir) {
     $src = $src_base . '/' . $dir;
