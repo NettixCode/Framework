@@ -49,7 +49,7 @@ abstract class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenCastToSt
     /**
      * The table associated with the model.
      *
-     * @var string
+     * @var string|null
      */
     protected $table;
 
@@ -1475,6 +1475,19 @@ abstract class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenCastToSt
     }
 
     /**
+     * Force a hard destroy on a soft deleted model.
+     *
+     * This method protects developers from running forceDestroy when the trait is missing.
+     *
+     * @param  \Illuminate\Support\Collection|array|int|string  $ids
+     * @return bool|null
+     */
+    public static function forceDestroy($ids)
+    {
+        return static::destroy($ids);
+    }
+
+    /**
      * Perform the actual delete query on this model instance.
      *
      * @return void
@@ -2134,7 +2147,7 @@ abstract class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenCastToSt
     /**
      * Retrieve the model for a bound value.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\Relation  $query
+     * @param  \Illuminate\Database\Eloquent\Model|\Illuminate\Contracts\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation  $query
      * @param  mixed  $value
      * @param  string|null  $field
      * @return \Illuminate\Contracts\Database\Eloquent\Builder
