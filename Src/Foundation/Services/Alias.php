@@ -33,6 +33,7 @@ class Alias
             'User' => \Nettixcode\Framework\Facades\User::class,
             'Config' => \Nettixcode\Framework\Facades\Config::class,
             'Route' => \Illuminate\Support\Facades\Route::class,
+            'NxLog' => \Illuminate\Support\Facades\Log::class,
             'filesystem' => \Illuminate\Support\Facades\File::class,
             'app' => [get_class($this->app), \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class, \Psr\Container\ContainerInterface::class],
             'blade.compiler' => [\Illuminate\View\Compilers\BladeCompiler::class],
@@ -44,12 +45,13 @@ class Alias
         ];
 
         $controllerAlias = [
-            'RolePermissionController' => \Nettixcode\Framework\Controllers\RolePermissionController::class,
+            'RoleController' => \Nettixcode\Framework\Controllers\RoleController::class,
+            'PermissionController' => \Nettixcode\Framework\Controllers\PermissionController::class,
             'PageBuilderController' => \Nettixcode\Framework\Controllers\PageBuilderController::class,
         ];
 
         $customAliases = $this->app['config']->get('aliases', []);
-        $customControllerAliasesPath = storage_path('cache').'/controlleraliases.php';
+        $customControllerAliasesPath = $this->app['config']->get('app.cache_paths.data',[]).'/controlleraliases.php';
 
         $customControllerAliases = file_exists($customControllerAliasesPath) ? require $customControllerAliasesPath : [];
         

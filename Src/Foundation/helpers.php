@@ -57,6 +57,28 @@ if (! function_exists('csrf_token')) {
     }
 }
 
+if (! function_exists('join_paths')) {
+    /**
+     * Join the given paths together.
+     *
+     * @param  string|null  $basePath
+     * @param  string  ...$paths
+     * @return string
+     */
+    function join_paths($basePath, ...$paths)
+    {
+        foreach ($paths as $index => $path) {
+            if (empty($path) && $path !== '0') {
+                unset($paths[$index]);
+            } else {
+                $paths[$index] = DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR);
+            }
+        }
+
+        return $basePath.implode('', $paths);
+    }
+}
+
 if (! function_exists('base_path')) {
     /**
      * Get the base path of the application.
@@ -91,26 +113,12 @@ if (! function_exists('storage_path')) {
     }
 }
 
-// if (!function_exists('route')) {
-//     function route($name, $parameters = [])
-//     {
-//         $filePath = Config::get('app.paths.storage_path') . '/registered_routes.json';
-//         $routes = file_exists($filePath) ? json_decode(file_get_contents($filePath), true) : null;
-
-//         if (isset($routes[$name])) {
-//             $route = $routes[$name];
-//             if (!empty($parameters)) {
-//                 foreach ($parameters as $key => $value) {
-//                     $route = str_replace('{' . $key . '}', $value, $route);
-//                 }
-//             }
-
-//             return $route;
-//         }
-
-//         throw new \Exception("Route {$name} not defined.");
-//     }
-// }
+if (! function_exists('resources_path')) {
+    function resources_path($path = '')
+    {
+        return base_path('resources') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+}
 
 if (! function_exists('route')) {
     /**
@@ -126,7 +134,6 @@ if (! function_exists('route')) {
         return app('url')->route($name, $parameters, $absolute);
     }
 }
-
 
 if (!function_exists('now')) {
     function now()
@@ -170,7 +177,6 @@ if (!function_exists('response')) {
                     }
                 }
 
-                // Jika bukan closure atau serialized closure, tambahkan data debugbar
                 if (!$isClosure && isset($debugbar)) {
                     $data['debugbar'] = $debugbar->getJavascriptRenderer()->render(false);
                     $data['debugbar_data'] = $debugbar->getData();
@@ -186,6 +192,21 @@ if (!function_exists('response')) {
                 echo json_encode($data);
                 exit;
             }
+
+            public function view($view, $data = [], $status = 200, $headers = [])
+            {
+                http_response_code($status);
+                header('Content-Type: text/html');
+
+                foreach ($headers as $key => $value) {
+                    header("$key: $value", false, $status);
+                }
+
+                $factory = app('view');
+                $viewInstance = $factory->make($view, $data, $headers);
+                echo $viewInstance->render();
+                exit;
+            }
         };
     }
 }
@@ -197,6 +218,9 @@ if (!function_exists('debug_send')) {
             case 'messages':
                 if (isset($debugbar)) {
                     $debugbar['messages']->addMessage($message);
+                    if (isset($debugbar['time'])) {
+                        $debugbar['time']->startMeasure('Page Render', 'Page Render','time');
+                    }
                 }
                 break;
             case 'exceptions':
@@ -204,11 +228,7 @@ if (!function_exists('debug_send')) {
                     $debugbar['exceptions']->addException($message);
                 }
                 break;
-        }
-        
-        if (isset($debugbar) && isset($debugbar['time'])) {
-            $debugbar['time']->startMeasure('Page Render', 'Page Render','time');
-        }
+        }        
     }
 }
 

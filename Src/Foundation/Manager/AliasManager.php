@@ -16,7 +16,7 @@ class AliasManager
     {
         $instance = new Static;
         $controllerDir   = $instance->config->get('app.paths.controllers');
-        $aliasConfigFile = $instance->config->get('app.cache_paths.local') . '/controlleraliases.php';
+        $aliasConfigFile = $instance->config->get('app.cache_paths.data') . '/controlleraliases.php';
 
         $namespace = '\\Application\\Http\\Controllers\\';
 

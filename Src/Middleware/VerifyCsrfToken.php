@@ -4,6 +4,7 @@ namespace Nettixcode\Framework\Middleware;
 
 use Nettixcode\Framework\Facades\Config;
 use Nettixcode\Framework\Foundation\Manager\SessionManager;
+use Nettixcode\Framework\Facades\NxLog;
 
 class VerifyCsrfToken
 {
@@ -19,7 +20,6 @@ class VerifyCsrfToken
         $excludedRoutes = array_merge($defaultExclude,$excludedConfig);
         $excludedRoutes = array_unique($excludedRoutes);
 
-        // Jangan lakukan pengecekan untuk file statis
         if (self::isStaticFile($current_uri)) {
             return $next($request);
         }
@@ -32,12 +32,12 @@ class VerifyCsrfToken
             $token = $_POST['_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
             if (!$token || $token !== SessionManager::get('_token')) {
                 header('HTTP/1.1 403 Forbidden');
+                NxLog::alert('Invalid CSRF Token');
                 exit();
             }
         }
 
-        // error_log('CSRF Verified: ' . $request->getUri());
-
+        NxLog::info('CSRF Token Verified');
         return $next($request);
     }
 

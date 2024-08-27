@@ -6,6 +6,7 @@ use Nettixcode\Framework\Facades\Config;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Encryption\Encrypter;
+use Nettixcode\Framework\Facades\NxLog;
 
 class VerifyJwtToken
 {
@@ -20,7 +21,6 @@ class VerifyJwtToken
             '/signout',
             '/api/json/role-permission',
             '/api/submit/page-builder/save',
-            '/api/submit/signin'
         ];
         $excludedConfig = Config::get('middleware.token.EXCLUDE_FROM_TOKEN');
         $excludedRoutes = array_merge($defaultExclude, $excludedConfig);
@@ -76,14 +76,14 @@ class VerifyJwtToken
 
             // Verifikasi JWT yang telah didekripsi
             $decoded = JWT::decode($decryptedJwt, new Key(self::getSecret(), 'HS256'));
-
+            NxLog::info('JWT Token Verified');
             // Token valid, lanjutkan ke middleware atau controller berikutnya
             return $next($request);
         } catch (\Exception $e) {
             $handler = app()->exceptions;
             http_response_code(401);
             $handler->handleError($e);
-            error_log('JWT NOT Verified: ' . $request->getUri() . ' - ' . $e->getMessage());
+            NxLog::alert('JWT NOT Verified: ' . $request->getUri() . ' - ' . $e->getMessage());
             header('HTTP/1.1 401 Unauthorized');
             echo json_encode(['message' => 'Unauthorized']);
             exit();

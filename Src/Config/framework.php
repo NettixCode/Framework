@@ -27,6 +27,6 @@ return [
     */
     'files' => [
         'helper'  => realpath(__DIR__ . '/../Foundation') . '/helpers.php', // Jalur ke file helper
-        'console' => realpath(__DIR__ . '/../Console') . '/kernel.php', // Jalur ke file kernel console
+        'command' => realpath(__DIR__ . '/../Console') . '/command.php', // Jalur ke file kernel console
     ],
 ];

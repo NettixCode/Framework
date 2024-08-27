@@ -8,25 +8,33 @@ trait RoleTrait {
     public function crud_role_form($role_name = '', $role_description = '')
     {
         $roleForm = '
-            <div class="row row-xs align-items-center mg-b-20">
-                <div class="col-md-4">
-                    <label class="mg-b-0">Role Name <span class="tx-danger">*</span></label>
-                </div>
-                <div class="col-md-8 mg-t-5 mg-md-t-0">
-                    <input class="form-control" placeholder="Role Name" type="text" id="name" name="name" value="' . $role_name . '" required>
+            <div class="row mb-6">
+                <label class="col-sm-4 col-form-label" for="name">Role Name</label>
+                <div class="col-sm-8">
+                    <div class="input-group input-group-merge">
+                        <span id="role-icon" class="input-group-text"><i class="bx bx-face"></i></span>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Role Name" aria-label="Role Name" aria-describedby="role-icon" required>
+                    </div>
                 </div>
             </div>
-            <div class="row row-xs align-items-center mg-b-20">
-                <div class="col-md-4">
-                    <label class="mg-b-0">Role Description <span class="tx-danger">*</span></label>
-                </div>
-                <div class="col-md-8 mg-t-5 mg-md-t-0">
-                    <input class="form-control" placeholder="Role Description" type="text" id="description" name="description" value="' . $role_description . '" required>
+            <div class="row mb-6">
+                <label class="col-sm-4 col-form-label" for="description">Role Description</label>
+                <div class="col-sm-8">
+                    <div class="input-group input-group-merge">
+                        <span id="description-icon" class="input-group-text"><i class="bx bx-captions"></i></span>
+                        <input type="text" class="form-control" id="description" name="description" placeholder="Enter Role Description" aria-label="Role Description" aria-describedby="description-icon" required>
+                    </div>
                 </div>
             </div>
         ';
 
-        return $roleForm;
+        return '
+            <div class="card">
+                <div class="card-body">
+                    '.$roleForm.'
+                </div>
+            </div>
+        ';
     }
     //ROLE
 }

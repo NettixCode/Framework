@@ -5,6 +5,7 @@ namespace Nettixcode\Framework\Middleware;
 use Closure;
 use Nettixcode\Framework\Facades\Config;
 use Nettixcode\Framework\Foundation\Manager\SessionManager;
+use Nettixcode\Framework\Facades\NxLog;
 
 class RateLimit
 {
@@ -39,7 +40,7 @@ class RateLimit
 
         self::logRequest($ip, 'Request allowed');
 
-        // error_log("RATE LIMIT");
+        NxLog::info('RateLimit is Running');
         return $next($request);
     }
 

@@ -4,12 +4,12 @@ namespace Nettixcode\Framework\Foundation\Services;
 
 use DebugBar\StandardDebugBar;
 use DebugBar\JavascriptRenderer;
-use DebugBar\DataCollector\MemoryCollector;
-use DebugBar\DataCollector\TimeDataCollector;
-use DebugBar\DataCollector\MessagesCollector;
-use DebugBar\DataCollector\ExceptionsCollector;
-use DebugBar\DataCollector\ConfigCollector;
-use DebugBar\DataCollector\PhpInfoCollector;
+use Nettixcode\Framework\Collectors\MemoryCollector;
+use Nettixcode\Framework\Collectors\TimeDataCollector;
+use Nettixcode\Framework\Collectors\MessagesCollector;
+use Nettixcode\Framework\Collectors\ConfigCollector;
+use Nettixcode\Framework\Collectors\PhpInfoCollector;
+use Nettixcode\Framework\Collectors\ExceptionsCollector;
 use Nettixcode\Framework\Collectors\RequestCollector;
 use Nettixcode\Framework\Collectors\SessionCollector;
 use Nettixcode\Framework\Collectors\HttpRequestCollector;
@@ -49,13 +49,8 @@ class Debugbar
         if (!$this->debugbar->hasCollector('php')) {
             $this->debugbar->addCollector(new PhpInfoCollector());
         }
-        if (!$this->debugbar->hasCollector('request')) {
-            $this->debugbar->addCollector(new RequestDataCollector());
-        }
-        if (!$this->debugbar->hasCollector('session')) {
-            $sessionManager = SessionManager::getInstance();
-            $sessionAdaptor = new SessionManagerAdaptor($sessionManager);
-            $this->debugbar->addCollector(new SessionCollector($sessionAdaptor));
+        if (!$this->debugbar->hasCollector('messages')) {
+            $this->debugbar->addCollector(new MessagesCollector());
         }
         if (!$this->debugbar->hasCollector('memory')) {
             $this->debugbar->addCollector(new MemoryCollector());
@@ -63,22 +58,12 @@ class Debugbar
         if (!$this->debugbar->hasCollector('time')) {
             $this->debugbar->addCollector(new TimeDataCollector());
         }
-        if (!$this->debugbar->hasCollector('messages')) {
-            $this->debugbar->addCollector(new MessagesCollector());
-        }
         if (!$this->debugbar->hasCollector('exceptions')) {
             $this->debugbar->addCollector(new ExceptionsCollector());
         }
-        if (!$this->debugbar->hasCollector('config')) {
-            $this->debugbar->addCollector(new ConfigCollector($_SERVER));
+        if (!$this->debugbar->hasCollector('request')) {
+            $this->debugbar->addCollector(new RequestDataCollector());
         }
-
-        if (!$this->debugbar->hasCollector('pdo')) {
-            $pdo = DB::connection()->getPdo();
-            $this->traceablePdo = new TraceablePDO($pdo);
-            $this->debugbar->addCollector(new PDOCollector($this->traceablePdo));
-        }
-
         if (!$this->debugbar->hasCollector('HttpRequest')) {
             $request = new Request();
             $response = new Response();
@@ -86,12 +71,22 @@ class Debugbar
             $session = new SessionManagerAdaptor($sessionManager);
             $this->debugbar->addCollector(new HttpRequestCollector($request, $response, $session));
         }
-
-        // Menambahkan RouteCollector
         if (!$this->debugbar->hasCollector('route')) {
             $this->debugbar->addCollector(new RouteCollector());
         }
-
+        if (!$this->debugbar->hasCollector('pdo')) {
+            $pdo = DB::connection()->getPdo();
+            $this->traceablePdo = new TraceablePDO($pdo);
+            $this->debugbar->addCollector(new PDOCollector($this->traceablePdo));
+        }
+        if (!$this->debugbar->hasCollector('session')) {
+            $sessionManager = SessionManager::getInstance();
+            $sessionAdaptor = new SessionManagerAdaptor($sessionManager);
+            $this->debugbar->addCollector(new SessionCollector($sessionAdaptor));
+        }
+        if (!$this->debugbar->hasCollector('config')) {
+            $this->debugbar->addCollector(new ConfigCollector($_SERVER));
+        }
     }
 
     public function enable()

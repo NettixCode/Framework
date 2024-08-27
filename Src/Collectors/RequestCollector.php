@@ -2,6 +2,9 @@
 
 namespace Nettixcode\Framework\Collectors;
 
+use DebugBar\DataCollector\DataCollector;
+use DebugBar\DataCollector\DataCollectorInterface;
+use DebugBar\DataCollector\Renderable;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 

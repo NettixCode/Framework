@@ -86,7 +86,7 @@ class Permission extends BaseModel
             $permissionsHtml .= "<span role=\"button\" class=\"badge $badgeClass\" data-role=\"{$roleId}\" data-permission=\"{$permission->id}\" data-table=\"$tableName\">{$permission->name}</span> ";
         }
 
-        return $permissionsHtml;
+        return '<div class="demo-inline-spacing">' . $permissionsHtml . '</div>';
     }
 
     public static function updates($changes)

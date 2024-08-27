@@ -18,7 +18,6 @@ class Middleware
             \Nettixcode\Framework\Middleware\VerifyCsrfToken::class,
             \Nettixcode\Framework\Middleware\VerifyJwtToken::class
         ],
-        'health' => []
     ];
 
     public function addMiddleware($middleware)

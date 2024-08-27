@@ -4,6 +4,7 @@ namespace Nettixcode\Framework\Collectors;
 
 use Closure;
 use DebugBar\DataCollector\DataCollector;
+use DebugBar\DataCollector\DataCollectorInterface;
 use DebugBar\DataCollector\Renderable;
 use Illuminate\Routing\Route as IlluminateRoute;
 use Nettixcode\Framework\Http\Request as CustomRequest;

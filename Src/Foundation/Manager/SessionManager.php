@@ -15,7 +15,6 @@ class SessionManager
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        $this->create_token();
         $this->addSecurity();
     }
 
@@ -113,6 +112,7 @@ class SessionManager
 
     private function addSecurity()
     {
+        $this->create_token();
         // Set initial session creation time if not set
         if (!$this->has('created')) {
             $this->set('created' ,time());
@@ -122,19 +122,7 @@ class SessionManager
             session_start();
             $this->set('created' ,time());
         }
-    
-        // Check and set user agent
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            if (!$this->has('user_agent')) {
-                $this->set('user_agent', $_SERVER['HTTP_USER_AGENT']);
-            } elseif ($this->get('user_agent') !== $_SERVER['HTTP_USER_AGENT']) {
-                self::destroy();
-                session_start();
-                $this->set('created' ,time());
-                $this->set('user_agent', $_SERVER['HTTP_USER_AGENT']);
-            }
-        }
-    
+        
         // Check and set IP address
         if (isset($_SERVER['REMOTE_ADDR'])) {
             if (!$this->has('ip_address')) {

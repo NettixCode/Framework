@@ -13,6 +13,7 @@ use Nettixcode\Framework\Foundation\Manager\SessionManager;
 use Nettixcode\Framework\Foundation\Manager\UserManager;
 use Nettixcode\Framework\Foundation\Manager\ViewManager;
 use Nettixcode\Framework\Http\Request;
+use Psr\Log\LoggerInterface;
 
 class Singleton
 {

@@ -25,16 +25,14 @@ trait Utility
         $content = '
 				<div class="modal-header">
 					<h6 class="modal-title">' . $titles . '</h6>
-					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
-						<span aria-hidden="true">×</span>
-					</button>
+					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
 				</div>
 				' . $form_open . '
 				<div class="modal-body py-3">
 					' . $content_body . '
 				</div>
 				<div class="modal-footer">
-					<button class="btn ripple btn-primary fw-bold" type="submit" ' . ($isforms ? 'data-form="' . $actions . '-form"' : 'data-bs-dismiss="modal"') . ' id="submit" data-value="Submit">
+					<button class="btn btn-primary fw-bold" type="submit" ' . ($isforms ? 'data-form="' . $actions . '-form"' : 'data-bs-dismiss="modal"') . ' id="submit" data-value="Submit">
 						' . ($isforms ? 'Submit' : 'Close') . '
 					</button>
 				</div>
