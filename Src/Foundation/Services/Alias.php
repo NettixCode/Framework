@@ -42,12 +42,14 @@ class Alias
             'filesystem' => [\Illuminate\Filesystem\FilesystemManager::class, \Illuminate\Contracts\Filesystem\Factory::class],
             'view' => [\Illuminate\View\Factory::class, \Illuminate\Contracts\View\Factory::class],
             'log' => [\Illuminate\Log\LogManager::class, \Psr\Log\LoggerInterface::class],
+            'url' => [\Illuminate\Routing\UrlGenerator::class, \Illuminate\Contracts\Routing\UrlGenerator::class],
         ];
 
         $controllerAlias = [
             'RoleController' => \Nettixcode\Framework\Controllers\RoleController::class,
             'PermissionController' => \Nettixcode\Framework\Controllers\PermissionController::class,
-            'PageBuilderController' => \Nettixcode\Framework\Controllers\PageBuilderController::class,
+            'AppSettingsController' => \Nettixcode\Framework\Controllers\AppSettingsController::class,
+            'SystemHealthController' => \Nettixcode\Framework\Controllers\SystemHealthController::class,
         ];
 
         $customAliases = $this->app['config']->get('aliases', []);

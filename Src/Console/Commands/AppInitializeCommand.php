@@ -74,8 +74,13 @@ class AppInitializeCommand extends Command
                 $table->increments('id');
                 $table->string('username')->unique();
                 $table->string('password');
+                $table->string('first_name')->nullable();
+                $table->string('last_name')->nullable();
+                $table->string('phone')->unique()->nullable();
+                $table->string('email')->unique()->nullable();
                 $table->string('status');
                 $table->string('profile_picture')->nullable();
+                $table->timestamps();
             });
         }
 

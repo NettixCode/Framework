@@ -27,6 +27,7 @@ class AuthManager
         if ($user) {
             if (password_verify($password, $user->password)) {
                 if ($user->status == 1) {
+                    session_regenerate_id(true);
                     foreach ($user->toArray() as $key => $value) {
                         if ($key != 'password') {
                             SessionManager::set($key, $value);
@@ -55,6 +56,8 @@ class AuthManager
 
                         public function __destruct()
                         {
+                            generateJwtToken();
+                            regenerate_csrf_token();
                             if ($this->checkComplete) {
                                 $incomplete = false;
                                 foreach ($this->user->toArray() as $key => $value) {
@@ -123,6 +126,8 @@ class AuthManager
 
             public function __destruct()
             {
+                regenerate_csrf_token();
+
                 if ($this->redirectUrl) {
                     header("Location: $this->redirectUrl");
                     exit();

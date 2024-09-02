@@ -9,6 +9,8 @@ use DebugBar\StandardDebugBar;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as ContainerContract;
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Env;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Nettixcode\Framework\Foundation\Manager\ConfigManager;
 use Nettixcode\Framework\Foundation\Manager\SessionManager;
@@ -48,8 +50,6 @@ class Application extends Container
 
     public static function configure(?string $basePath = null)
     {
-        define('NETTIXCODE_START', microtime(true));
-        
         $basePath = match (true) {
             is_string($basePath) => $basePath,
             default => static::inferBasePath(),
@@ -80,7 +80,7 @@ class Application extends Container
 
         Facade::setFacadeApplication($this);
 
-        SessionManager::getInstance();
+        Schema::setFacadeApplication($this->app);
 
         $this->app->singleton('config', function () {
             $configPath = $this->getCachedConfigPath();
@@ -93,6 +93,10 @@ class Application extends Container
             }
         });
 
+        SessionManager::getInstance();
+
+        create_csrf_token();
+        
         $this->isBooting = true;
 
         new Singleton($this);
@@ -111,11 +115,11 @@ class Application extends Container
     protected function registerBaseService()
     {
         $this->register(\Illuminate\Routing\RoutingServiceProvider::class);        
-        $this->register(\Nettixcode\Framework\Foundation\Providers\DatabaseServiceProvider::class);        
+        $this->register(\Illuminate\Database\DatabaseServiceProvider::class);
         $this->register(\Illuminate\Events\EventServiceProvider::class);
         $this->register(\Illuminate\Log\LogServiceProvider::class);
     }
-   
+
     private function configure_debuging()
     {
         if ($this['config']->get('app.app_debug')) {
@@ -241,6 +245,10 @@ class Application extends Container
             $this->boot();
         }
 
+        if (!SessionManager::has('NETTIXCODE_START')) {
+            SessionManager::set('NETTIXCODE_START',microtime(true));
+        }
+        
         if ($this['config']->get('app.app_debug')){
             $kernel = $this->make(\Nettixcode\Framework\Http\Kernel::class);
             $kernel->handle($request);
@@ -297,7 +305,12 @@ class Application extends Container
     {
         return false;
     }
-    
+
+    public function runningInConsole()
+    {
+        return  Env::get('APP_RUNNING_IN_CONSOLE') ?? (\PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg');
+    }
+
     public function getConfig($key = null)
     {
         if ($key === null) {
@@ -365,6 +378,4 @@ class Application extends Container
     {
         return join_paths($basePath, $path);
     }
-
-
 }

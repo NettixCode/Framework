@@ -23,7 +23,7 @@ trait Utility
         }
 
         $content = '
-				<div class="modal-header">
+				<div class="modal-header border-bottom">
 					<h6 class="modal-title">' . $titles . '</h6>
 					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
 				</div>
@@ -31,8 +31,8 @@ trait Utility
 				<div class="modal-body py-3">
 					' . $content_body . '
 				</div>
-				<div class="modal-footer">
-					<button class="btn btn-primary fw-bold" type="submit" ' . ($isforms ? 'data-form="' . $actions . '-form"' : 'data-bs-dismiss="modal"') . ' id="submit" data-value="Submit">
+				<div class="modal-footer border-top">
+					<button class="btn btn-sm btn-primary fw-bold" type="submit" ' . ($isforms ? 'data-form="' . $actions . '-form"' : 'data-bs-dismiss="modal"') . ' id="submit" data-value="Submit">
 						' . ($isforms ? 'Submit' : 'Close') . '
 					</button>
 				</div>

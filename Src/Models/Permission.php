@@ -83,7 +83,8 @@ class Permission extends BaseModel
         $permissionsHtml = '';
         foreach ($allPermissions as $permission) {
             $badgeClass = in_array($permission->name, $rolePermissions) ? 'bg-primary' : 'bg-light';
-            $permissionsHtml .= "<span role=\"button\" class=\"badge $badgeClass\" data-role=\"{$roleId}\" data-permission=\"{$permission->id}\" data-table=\"$tableName\">{$permission->name}</span> ";
+            $permissionList = str_replace('-'.$tableName,'',$permission->name);
+            $permissionsHtml .= "<span role=\"button\" class=\"badge $badgeClass\" data-role=\"{$roleId}\" data-permission=\"{$permission->id}\" data-table=\"$tableName\">{$permissionList}</span> ";
         }
 
         return '<div class="demo-inline-spacing">' . $permissionsHtml . '</div>';

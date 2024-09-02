@@ -6,13 +6,14 @@ class Middleware
 {
     protected $middleware = [
         \Nettixcode\Framework\Middleware\AdminRestricted::class,
+        \Nettixcode\Framework\Middleware\JwtAuthorizedHeader::class,
         \Nettixcode\Framework\Middleware\RateLimit::class
     ];
 
     protected $middlewareGroups = [
         'web' => [
-            \Application\Middleware\CheckLoginStatus::class,
-            \Nettixcode\Framework\Middleware\GenerateJwtToken::class
+            \Nettixcode\Framework\Middleware\AuthSession::class,
+            // \Nettixcode\Framework\Middleware\GenerateJwtToken::class
         ],
         'api' => [
             \Nettixcode\Framework\Middleware\VerifyCsrfToken::class,

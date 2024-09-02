@@ -16,7 +16,7 @@ function recurse_copy($src, $dst) {
 }
 
 $directories_to_copy = [
-    'Bus',
+    'Cache',
     'Collections',
     'Conditionable',
     'Config',
@@ -32,7 +32,6 @@ $directories_to_copy = [
     'Macroable',
     'Pipeline',
     'Routing',
-    'Session',
     'Support',
     'Translation',
     'Validation',

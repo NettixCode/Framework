@@ -50,7 +50,8 @@ class ApplicationBuilder
             $using = $this->buildRoutingCallback($web, $api, $health, $apiPrefix);
         }
         // $this->routes = compact('web', 'api');
-
+        $prefix = !is_null($apiPrefix) ? $apiPrefix : '';
+        setcookie('apiPrefix', $prefix, 0, '/', '', true, false);
         if ($using) {
             \Nettixcode\Framework\Foundation\Providers\RouteServiceProvider::loadRoutesUsing($using);
 
@@ -137,6 +138,7 @@ class ApplicationBuilder
     public function withProviders(?array $provide = [])
     {
         $service = [
+            \Illuminate\Cache\CacheServiceProvider::class,
             \Nettixcode\Framework\Foundation\Providers\ViewServiceProvider::class,
             \Illuminate\Encryption\EncryptionServiceProvider::class,
             \Illuminate\Hashing\HashServiceProvider::class,

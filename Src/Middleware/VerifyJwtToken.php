@@ -7,6 +7,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Encryption\Encrypter;
 use Nettixcode\Framework\Facades\NxLog;
+use SessionManager;
 
 class VerifyJwtToken
 {
@@ -16,11 +17,16 @@ class VerifyJwtToken
             return $next($request);
         }
 
+        if (!SessionManager::has('isLogin')){
+            return $next($request);
+        }
+
         $current_uri    = $_SERVER['REQUEST_URI'];
+        $apiPrefix = $_COOKIE['apiPrefix'];
         $defaultExclude = [
-            '/signout',
-            '/api/json/role-permission',
-            '/api/submit/page-builder/save',
+            // '/signout',
+            // '/'.$apiPrefix.'/json/role-permission',
+            // '/'.$apiPrefix.'/submit/page-builder/save',
         ];
         $excludedConfig = Config::get('middleware.token.EXCLUDE_FROM_TOKEN');
         $excludedRoutes = array_merge($defaultExclude, $excludedConfig);
@@ -43,6 +49,8 @@ class VerifyJwtToken
             $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
             if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
                 $jwt = $matches[1];
+                $jwt = urldecode($jwt);
+                // NxLog::alert('JWT FROM HEADER = '.$jwt);
             }
         }
 
@@ -62,7 +70,7 @@ class VerifyJwtToken
             } catch (\Exception $e) {
                 $handler = app()->exceptions;
                 http_response_code(401);
-                $handler->handleError($e);
+                $handler->report($e);
                 header('HTTP/1.1 401 Unauthorized');
                 echo json_encode(['message' => $e->getMessage()]);
                 exit();
@@ -82,7 +90,7 @@ class VerifyJwtToken
         } catch (\Exception $e) {
             $handler = app()->exceptions;
             http_response_code(401);
-            $handler->handleError($e);
+            $handler->report($e);
             NxLog::alert('JWT NOT Verified: ' . $request->getUri() . ' - ' . $e->getMessage());
             header('HTTP/1.1 401 Unauthorized');
             echo json_encode(['message' => 'Unauthorized']);

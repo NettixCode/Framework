@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 class UserManager extends BaseModel
 {
     private static $instance = null;
-    public $timestamps = false;
+    // public $timestamps = false;
     protected $table = 'users';
 
     protected $fillable = [

@@ -97,7 +97,9 @@ abstract class BaseModel extends Model
                 if (isset($data['password'])) {
                     $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
                 }
-    
+
+                $data['created_at'] = now();
+                
                 $userRole = $data['user_role'] ?? null;
                 unset($data['user_role']);
     
@@ -123,7 +125,9 @@ abstract class BaseModel extends Model
             if ($this->operation === 'edit') {
                 $id = $data['id'];
                 unset($data['id']);
-    
+
+                $data['updated_at'] = now();
+                
                 $newUserRole = $data['user_role'] ?? null;
                 unset($data['user_role']);
     

@@ -3,7 +3,10 @@
 use Nettixcode\Framework\Foundation\Application;
 use Nettixcode\Framework\Foundation\Manager\SessionManager;
 use Nettixcode\Framework\Facades\Config;
+use Nettixcode\Framework\Facades\NxLog;
 use Illuminate\Contracts\View\Factory as ViewFactory;
+use Illuminate\Encryption\Encrypter;
+use Firebase\JWT\JWT;
 
 if (!function_exists('app')) {
     function app($abstract = null)
@@ -54,6 +57,133 @@ if (! function_exists('csrf_token')) {
     function csrf_token()
     {
         return SessionManager::get('_token');
+    }
+}
+
+if (! function_exists('generateJwtToken')) {
+    function generateJwtToken(){
+        if (!env('JWT_AUTH')) {
+            return;
+        }
+
+        if (!SessionManager::get('jwt_token')) {
+            $current_uri = $_SERVER['REQUEST_URI'];
+
+            $userId  = SessionManager::get('id') ? SessionManager::get('id') : null;
+            $userNm  = SessionManager::get('username') ? SessionManager::get('username') : null;
+            $payload = [
+                'iss'  => env('APP_URL'), // Issuer
+                'iat'  => time(), // Issued at
+                'exp'  => time() + env('JWT_EXPIRATION_TIME'), // Expiration time
+                'sub'  => $userId, // Subject (user ID)
+                'name' => $userNm,
+            ];
+
+            $jwt = JWT::encode($payload, getSecret(), 'HS256');
+
+            $encrypter = new Encrypter(base64_decode(substr(app('config')->get('app.key'), 7)), 'AES-256-CBC');
+            $encryptedJwt = $encrypter->encrypt($jwt);
+
+            SessionManager::set('jwt_token', $encryptedJwt);
+            NxLog::info('JWT Token Generated');
+        }
+    }
+
+    function getSecret()
+    {
+        $key = env('APP_KEY');
+        if (strpos($key, 'base64:') === 0) {
+            $key = base64_decode(substr($key, 7));
+        }
+        return $key;
+    }
+}
+
+if (! function_exists('create_csrf_token')) {
+    function create_csrf_token()
+    {
+        $current_uri = $_SERVER['REQUEST_URI'] ?? '/';
+
+        if (!SessionManager::has('_token')) {
+            SessionManager::set('_token', generateToken());
+        }
+
+        if (isStaticFile($current_uri)) {
+            return;
+        }
+    }
+
+    function generateToken()
+    {
+        $key = env('APP_KEY');
+        
+        if ($key !== null && strpos($key, 'base64:') === 0) {
+            $key = base64_decode(substr($key, 7));
+        }
+
+        return hash_hmac('sha256', session_id(), $key ?: 'fallback_key');
+    }
+
+    function isStaticFile($uri)
+    {
+        $staticFileExtensions = ['.css', '.js', '.map', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+        foreach ($staticFileExtensions as $extension) {
+            if (strpos($uri, $extension) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+if (! function_exists('regenerate_csrf_token')) {
+    function regenerate_csrf_token()
+    {
+        SessionManager::forget('_token');
+
+        create_csrf_token();
+
+        return SessionManager::get('_token');
+    }
+}
+
+if (! function_exists('session')) {
+    function session($key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return app('session');
+        }
+
+        if (is_array($key)) {
+            return app('session')->put($key);
+        }
+
+        return app('session')->get($key, $default);
+    }
+}
+
+if (! function_exists('config')) {
+    /**
+     * Get / set the specified configuration value.
+     *
+     * If an array is passed as the key, we will assume you want to set an array of values.
+     *
+     * @param  array<string, mixed>|string|null  $key
+     * @param  mixed  $default
+     * @return ($key is null ? \Illuminate\Config\Repository : ($key is string ? mixed : null))
+     */
+    function config($key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return app('config');
+        }
+
+        if (is_array($key)) {
+            return app('config')->set($key);
+        }
+
+        return app('config')->get($key, $default);
     }
 }
 
@@ -113,8 +243,8 @@ if (! function_exists('storage_path')) {
     }
 }
 
-if (! function_exists('resources_path')) {
-    function resources_path($path = '')
+if (! function_exists('resource_path')) {
+    function resource_path($path = '')
     {
         return base_path('resources') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -132,6 +262,26 @@ if (! function_exists('route')) {
     function route($name, $parameters = [], $absolute = true)
     {
         return app('url')->route($name, $parameters, $absolute);
+    }
+}
+
+if (! function_exists('url')) {
+    /**
+     * Generate a url for the application.
+     *
+     * @param  string|null  $path
+     * @param  mixed  $parameters
+     * @param  bool|null  $secure
+     * @return ($path is null ? \Illuminate\Contracts\Routing\UrlGenerator : string)
+     */
+    function url($path = null, $parameters = [], $secure = null)
+    {
+        $urlGenerator = app('url');
+        if (is_null($path)) {
+            return $urlGenerator;
+        }
+
+        return $urlGenerator->to($path, $parameters, $secure);
     }
 }
 

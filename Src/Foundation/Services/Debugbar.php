@@ -64,27 +64,27 @@ class Debugbar
         if (!$this->debugbar->hasCollector('request')) {
             $this->debugbar->addCollector(new RequestDataCollector());
         }
-        if (!$this->debugbar->hasCollector('HttpRequest')) {
+        if (!$this->debugbar->hasCollector('HttpRequest') && Config::get('debugbar.widgets.httpRequest')) {
             $request = new Request();
             $response = new Response();
             $sessionManager = SessionManager::getInstance();
             $session = new SessionManagerAdaptor($sessionManager);
             $this->debugbar->addCollector(new HttpRequestCollector($request, $response, $session));
         }
-        if (!$this->debugbar->hasCollector('route')) {
+        if (!$this->debugbar->hasCollector('route') && Config::get('debugbar.widgets.route')) {
             $this->debugbar->addCollector(new RouteCollector());
         }
-        if (!$this->debugbar->hasCollector('pdo')) {
+        if (!$this->debugbar->hasCollector('pdo') && Config::get('debugbar.widgets.query')) {
             $pdo = DB::connection()->getPdo();
             $this->traceablePdo = new TraceablePDO($pdo);
             $this->debugbar->addCollector(new PDOCollector($this->traceablePdo));
         }
-        if (!$this->debugbar->hasCollector('session')) {
+        if (!$this->debugbar->hasCollector('session') && Config::get('debugbar.widgets.session')) {
             $sessionManager = SessionManager::getInstance();
             $sessionAdaptor = new SessionManagerAdaptor($sessionManager);
             $this->debugbar->addCollector(new SessionCollector($sessionAdaptor));
         }
-        if (!$this->debugbar->hasCollector('config')) {
+        if (!$this->debugbar->hasCollector('config') && Config::get('debugbar.widgets.config')) {
             $this->debugbar->addCollector(new ConfigCollector($_SERVER));
         }
     }
