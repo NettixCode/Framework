@@ -2,7 +2,7 @@
     "name": "nettixcode/framework",
     "description": "The Nettixcode Framework.",
     "keywords": ["nettixcode", "laravel", "laravel-nx"],
-    "version": "2.0.0",
+    "version": "2.0.1",
     "license": "MIT",
     "homepage": "https://github.com/NettixCode",
     "support": {
