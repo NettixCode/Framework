@@ -16,30 +16,12 @@ function recurse_copy($src, $dst) {
 }
 
 $directories_to_copy = [
-    'Cache',
-    'Collections',
-    'Conditionable',
-    'Config',
-    'Container',
-    'Contracts',
-    'Database',
-    'Encryption',
-    'Events',
-    'Filesystem',
-    'Hashing',
-    'Http',
-    'Log',
-    'Macroable',
-    'Pipeline',
-    'Routing',
-    'Support',
-    'Translation',
-    'Validation',
-    'View'
+    'Concurrency',
+    'Foundation'
 ];
 
 $src_base = 'laravel-framework/src/Illuminate';
-$dst_base = 'Libraries/Illuminate';
+$dst_base = 'src/Illuminate';
 
 foreach ($directories_to_copy as $dir) {
     $src = $src_base . '/' . $dir;
