@@ -44,9 +44,7 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'nxcode_asset' => env('COMPOSER_VENDOR_DIR', base_path('vendor')).'/nxcode/framework/resources',
-
-    'nxcode_resource' => env('COMPOSER_VENDOR_DIR', base_path('vendor')).'/nxcode/framework/resources/views',
+    'nxcode_resource' => env('COMPOSER_VENDOR_DIR', base_path('vendor')).'/nettixcode/framework/resources/views',
 
     'debug' => (bool) env('APP_DEBUG', false),
 

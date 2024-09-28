@@ -4,7 +4,7 @@ use Nettixcode\Facades\User;
 
 if (!function_exists('nettixcode_path')){
     function nettixcode_path($path = ''){
-        return base_path('vendor/nxcode/framework/src/').$path;
+        return base_path('vendor/nettixcode/framework/src/').$path;
     }
 }
 
