@@ -70,6 +70,7 @@ use Illuminate\Foundation\Console\OptimizeCommand;
 use Illuminate\Foundation\Console\PackageDiscoverCommand;
 use Illuminate\Foundation\Console\PolicyMakeCommand;
 use Illuminate\Foundation\Console\ProviderMakeCommand;
+use Illuminate\Foundation\Console\ReloadCommand;
 use Illuminate\Foundation\Console\RequestMakeCommand;
 use Illuminate\Foundation\Console\ResourceMakeCommand;
 use Illuminate\Foundation\Console\RouteCacheCommand;
@@ -91,7 +92,6 @@ use Illuminate\Foundation\Console\ViewMakeCommand;
 use Illuminate\Notifications\Console\NotificationTableCommand;
 use Illuminate\Queue\Console\BatchesTableCommand;
 use Illuminate\Queue\Console\ClearCommand as QueueClearCommand;
-use Illuminate\Queue\Console\ContinueCommand as QueueContinueCommand;
 use Illuminate\Queue\Console\FailedTableCommand;
 use Illuminate\Queue\Console\FlushFailedCommand as FlushFailedQueueCommand;
 use Illuminate\Queue\Console\ForgetFailedCommand as ForgetFailedQueueCommand;
@@ -148,7 +148,6 @@ class ArtisanServiceProvider extends ServiceProvider implements DeferrableProvid
         'PackageDiscover' => PackageDiscoverCommand::class,
         'PruneStaleTagsCommand' => PruneStaleTagsCommand::class,
         'QueueClear' => QueueClearCommand::class,
-        'QueueContinue' => QueueContinueCommand::class,
         'QueueFailed' => ListFailedQueueCommand::class,
         'QueueFlush' => FlushFailedQueueCommand::class,
         'QueueForget' => ForgetFailedQueueCommand::class,
@@ -162,6 +161,7 @@ class ArtisanServiceProvider extends ServiceProvider implements DeferrableProvid
         'QueueRetry' => QueueRetryCommand::class,
         'QueueRetryBatch' => QueueRetryBatchCommand::class,
         'QueueWork' => QueueWorkCommand::class,
+        'Reload' => ReloadCommand::class,
         'RouteCache' => RouteCacheCommand::class,
         'RouteClear' => RouteClearCommand::class,
         'RouteList' => RouteListCommand::class,
