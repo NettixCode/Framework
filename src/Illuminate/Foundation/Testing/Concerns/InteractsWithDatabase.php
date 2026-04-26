@@ -33,7 +33,7 @@ trait InteractsWithDatabase
             return $this;
         }
 
-        if (array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
+        if ($data !== [] && array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
             foreach ($data as $row) {
                 $this->assertDatabaseHas($table, $row, $connection);
             }
@@ -73,7 +73,7 @@ trait InteractsWithDatabase
             return $this;
         }
 
-        if (array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
+        if ($data !== [] && array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
             foreach ($data as $row) {
                 $this->assertDatabaseMissing($table, $row, $connection);
             }
@@ -158,6 +158,14 @@ trait InteractsWithDatabase
             );
         }
 
+        if ($data !== [] && array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
+            foreach ($data as $row) {
+                $this->assertSoftDeleted($table, $row, $connection, $deletedAtColumn);
+            }
+
+            return $this;
+        }
+
         $this->assertThat(
             $this->getTable($table),
             new SoftDeletedInDatabase(
@@ -196,6 +204,14 @@ trait InteractsWithDatabase
                 $table->getConnectionName(),
                 $table->getDeletedAtColumn()
             );
+        }
+
+        if ($data !== [] && array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
+            foreach ($data as $row) {
+                $this->assertNotSoftDeleted($table, $row, $connection, $deletedAtColumn);
+            }
+
+            return $this;
         }
 
         $this->assertThat(
