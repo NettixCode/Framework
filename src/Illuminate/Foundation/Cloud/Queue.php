@@ -359,14 +359,16 @@ class Queue implements QueueContract, ClearableQueue
      * @param  string|null  $queue
      * @return string
      */
-    protected function normalizeQueue($queue)
+    public function normalizeQueue($queue)
     {
         $prefix = $this->config['connection']['prefix'] ?? null;
         $suffix = $this->config['connection']['suffix'] ?? null;
 
         return Str::of($this->queue->getQueue($queue))
             ->when($prefix, fn ($str) => $str->chopStart($prefix.'/'))
-            ->when($suffix, fn ($str) => $str->chopEnd($suffix))
+            ->when($suffix, fn ($str) => $str->endsWith('.fifo')
+                ? $str->chopEnd('.fifo')->chopEnd($suffix)->append('.fifo')
+                : $str->chopEnd($suffix))
             ->toString();
     }
 
