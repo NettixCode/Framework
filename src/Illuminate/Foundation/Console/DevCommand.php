@@ -59,7 +59,7 @@ class DevCommand extends Command
         foreach ($devCommands as $devCommand) {
             $this->line(
                 sprintf(
-                    '<fg=%s>[%s]</>%s<fg=#888888>%s</>',
+                    '<fg=%s>[%s]</>%s%s',
                     $devCommand['color'],
                     $devCommand['name'],
                     str_repeat(' ', ($longestName - strlen($devCommand['name'])) + 1),
@@ -71,7 +71,7 @@ class DevCommand extends Command
         $this->line('');
 
         $command = $packageManager->getExecCommand(sprintf(
-            'concurrently -c "%s" "%s" --names=%s --kill-others',
+            'concurrently -c "%s" "%s" --names=%s --kill-others-on-fail',
             implode(',', $colors),
             implode('" "', $commands),
             implode(',', $names)

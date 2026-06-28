@@ -2,7 +2,6 @@
 
 namespace Illuminate\Foundation;
 
-use Exception;
 use Illuminate\Support\NodePackageManager;
 use ReflectionClass;
 
@@ -56,14 +55,10 @@ class DevCommands
             return;
         }
 
-        foreach ([
-            'server' => 'php artisan serve --host=localhost',
-            'queue' => 'php artisan queue:listen --tries=1 --timeout=0',
-            'logs' => 'php artisan pail --timeout=0',
-            'vite' => self::getPackageManager()->getRunCommand('dev'),
-        ] as $name => $command) {
-            self::$commands[$name] = new DevCommand($command, $name);
-        }
+        self::artisan('serve --host=localhost', 'server');
+        self::artisan('queue:listen --tries=1 --timeout=0', 'queue');
+        self::artisan('pail --timeout=0', 'logs');
+        self::node('dev', 'vite');
     }
 
     /**
@@ -76,14 +71,20 @@ class DevCommands
     public static function register(string $command, ?string $name = null): DevCommand
     {
         if (! app()->runningInConsole()) {
-            return new DevCommand('', '');
+            return new DevCommand('', [], '');
         }
 
-        self::preventVendorRegistration($name ?? $command);
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        $source = self::resolveSource($trace);
+        $priority = self::resolvePriority($trace);
 
-        $devCommand = new DevCommand($command, $name);
+        $devCommand = new DevCommand($command, $source, $name, $priority);
 
-        self::$commands[$devCommand->name()] = $devCommand;
+        $existing = self::$commands[$devCommand->name()] ?? null;
+
+        if (! $existing || $devCommand->priority() >= $existing->priority()) {
+            self::$commands[$devCommand->name()] = $devCommand;
+        }
 
         return $devCommand;
     }
@@ -97,7 +98,7 @@ class DevCommands
      */
     public static function artisan(string $command, ?string $name = null): DevCommand
     {
-        return self::register("php artisan {$command}", $name ?? self::nameFromCommand($command));
+        return self::register("php artisan {$command}", $name ?? DevCommand::nameFromCommand($command));
     }
 
     /**
@@ -109,7 +110,7 @@ class DevCommands
      */
     public static function node(string $command, ?string $name = null): DevCommand
     {
-        return self::register(self::getPackageManager()->getRunCommand($command), $name ?? self::nameFromCommand($command));
+        return self::register(self::getPackageManager()->getRunCommand($command), $name ?? DevCommand::nameFromCommand($command));
     }
 
     /**
@@ -121,13 +122,13 @@ class DevCommands
      */
     public static function nodeExec(string $command, ?string $name = null): DevCommand
     {
-        return self::register(self::getPackageManager()->getExecCommand($command), $name ?? self::nameFromCommand($command));
+        return self::register(self::getPackageManager()->getExecCommand($command), $name ?? DevCommand::nameFromCommand($command));
     }
 
     /**
      * Get the registered development commands.
      *
-     * @return array
+     * @return array{'name': string, 'command': string, 'source': array{'file': string, 'line': int, 'class'?: string, 'function'?: string}, 'color': string}[]
      */
     public static function commands(): array
     {
@@ -180,17 +181,36 @@ class DevCommands
     }
 
     /**
-     * Prevent automatic registration of DevCommands from within vendor packages.
+     * Resolve the first external caller frame from a debug backtrace.
      *
-     * @param  string  $name
-     * @return void
-     *
-     * @throws Exception
+     * @param  array<int, array{'file': string, 'line': int, 'class'?: string, 'function'?: string}>  $trace
+     * @return array{'file': string, 'line': int, 'class'?: string, 'function'?: string}
      */
-    protected static function preventVendorRegistration(string $name)
+    protected static function resolveSource(array $trace): array
     {
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        foreach ($trace as $frame) {
+            if (($frame['file'] ?? null) === __FILE__) {
+                continue;
+            }
 
+            if (($frame['class'] ?? null) === self::class) {
+                continue;
+            }
+
+            return $frame;
+        }
+
+        return [];
+    }
+
+    /**
+     * Determine the registration priority from a debug backtrace.
+     *
+     * @param  array<int, array{'file': string, 'line': int, 'class'?: string, 'function'?: string}>  $trace
+     * @return int
+     */
+    protected static function resolvePriority(array $trace): int
+    {
         foreach ($trace as $frame) {
             $file = $frame['file'] ?? null;
             $class = $frame['class'] ?? null;
@@ -199,27 +219,24 @@ class DevCommands
                 continue;
             }
 
+            if ($class === self::class && ($frame['function'] ?? null) === 'registerDefaults') {
+                return DevCommand::PRIORITY_DEFAULT;
+            }
+
             if (! $file && $class) {
                 $file = (new ReflectionClass($class))->getFileName();
             }
 
-            if ($file === base_path('artisan')) {
-                continue;
-            }
-
-            if (! $file) {
+            if (! $file || $file === base_path('artisan')) {
                 continue;
             }
 
             if (! str_contains($file, base_path('vendor'))) {
-                // We found at least one frame that came from userland code, we're good...
-                return;
+                return DevCommand::PRIORITY_USERLAND;
             }
         }
 
-        throw new Exception(
-            "DevCommands should be registered in application code, not within vendor packages. Attempted to register command: {$name}"
-        );
+        return DevCommand::PRIORITY_VENDOR;
     }
 
     /**
@@ -245,17 +262,6 @@ class DevCommands
     }
 
     /**
-     * Derive a command name from the given command string by taking the first word.
-     *
-     * @param  string  $command
-     * @return string
-     */
-    protected static function nameFromCommand(string $command): string
-    {
-        return strstr($command, ' ', true);
-    }
-
-    /**
      * Resolve and return the NodePackageManager instance.
      *
      * @return NodePackageManager
@@ -263,18 +269,5 @@ class DevCommands
     protected static function getPackageManager(): NodePackageManager
     {
         return self::$packageManager ??= new NodePackageManager();
-    }
-
-    /**
-     * Clear all registered development commands and reset the state of the DevCommands class.
-     *
-     * @return void
-     */
-    public static function clear(): void
-    {
-        self::$commands = [];
-        self::$except = [];
-        self::$only = [];
-        self::$colorCount = 0;
     }
 }
