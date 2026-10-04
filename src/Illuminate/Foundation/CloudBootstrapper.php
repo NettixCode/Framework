@@ -26,6 +26,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\ConfigurationUrlParser;
 use Illuminate\Support\Env;
 use Illuminate\Support\Str;
+use Laravel\Octane\Events\RequestReceived;
 use Monolog\Handler\SocketHandler;
 use PDO;
 use Throwable;
@@ -95,7 +96,8 @@ class CloudBootstrapper
                     'bucket' => $disk['bucket'],
                     'url' => $disk['url'],
                     'endpoint' => $disk['endpoint'],
-                    'region' => 'auto',
+                    'region' => $disk['region'] ?? 'auto',
+                    'credentials' => $disk['credentials'] ?? null,
                     'use_path_style_endpoint' => false,
                     'throw' => false,
                     'report' => false,
@@ -360,10 +362,11 @@ class CloudBootstrapper
                 ? $registerReporter($app[ExceptionHandlerContract::class])
                 : $app->afterResolving(ExceptionHandlerContract::class, $registerReporter);
 
-            $app['events']->listen(fn (ContextDehydrating $event) => $exceptionReporter->rememberUserIdInContext($event->context));
-            $app['events']->listen(fn (ContextDehydrating $event) => $exceptionReporter->rememberTraceIdInContext($event->context));
+            $app['events']->listen(fn (ContextDehydrating $event) => $exceptionReporter->handleContextDehydrating($event->context));
 
             if (! $app->runningInConsole()) {
+                $app['events']->listen(fn (RequestReceived $event) => $exceptionReporter->prepareForOctaneRequest());
+
                 $app['events']->listen(function (Logout $event) use ($exceptionReporter) {
                     if ($event->user !== null) {
                         $exceptionReporter->rememberUser($event->user);
